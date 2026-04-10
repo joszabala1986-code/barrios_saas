@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+* { box-sizing: border-box; }
+
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f4f6f9;
@@ -66,13 +68,15 @@ body {
     padding: 8px;
     border-radius: 8px;
     transition: background 0.3s;
+    z-index: 1001;
+    position: relative;
 }
 
 .menu-toggle:hover {
     background: rgba(20, 83, 45, 0.1);
 }
 
-/* --- MENÚ SUPERIOR --- */
+/* --- MENÚ SUPERIOR DESKTOP --- */
 .menu {
     display: flex;
     align-items: center;
@@ -109,6 +113,20 @@ body {
 
 .menu a[href*="logout"]:hover {
     background: rgba(220, 38, 38, 0.15);
+}
+
+/* --- OVERLAY MENÚ MÓVIL --- */
+.menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 997;
+}
+
+.menu-overlay.active {
+    display: block;
 }
 
 /* --- CONTENEDOR PRINCIPAL --- */
@@ -304,17 +322,14 @@ body {
     width: 100% !important;
 }
 
-/* --- RESPONSIVE CON MENÚ HAMBURGUESA --- */
+/* --- RESPONSIVE --- */
 @media (max-width: 850px) {
     .header {
         flex-direction: row;
         padding: 12px 15px;
-        position: relative;
     }
 
-    .logo-area img {
-        height: 35px;
-    }
+    .logo-area img { height: 35px; }
 
     .saludo {
         margin: 0;
@@ -322,49 +337,49 @@ body {
         text-align: center;
     }
 
-    .bienvenida {
-        font-size: 14px;
-    }
+    .bienvenida { font-size: 14px; }
+    .barrio { font-size: 11px; }
 
-    .barrio {
-        font-size: 11px;
-    }
-
+    /* Mostrar hamburguesa */
     .menu-toggle {
         display: block;
         order: 3;
     }
 
+    /* Menú desliza desde la derecha */
     .menu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 75%;
+        max-width: 280px;
+        height: 100vh;
         background: white;
         flex-direction: column;
-        padding: 15px;
+        align-items: flex-start;
+        padding: 70px 20px 30px 20px;
         gap: 10px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        border-radius: 0 0 12px 12px;
-        z-index: 999;
+        box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+        z-index: 998;
+        transition: right 0.3s ease;
+        display: flex;
+        overflow-y: auto;
     }
 
     .menu.open {
-        display: flex;
+        right: 0;
     }
 
     .menu a {
         width: 100%;
-        justify-content: center;
-        padding: 12px;
+        justify-content: flex-start;
+        padding: 12px 16px;
         font-size: 14px;
         white-space: normal;
+        border-radius: 10px;
     }
 
-    .card h2 {
-        font-size: 18px;
-    }
+    .card h2 { font-size: 18px; }
 
     .filtro {
         flex-direction: column;
@@ -376,27 +391,18 @@ body {
         width: 100%;
     }
 
+    /* 2 columnas en móvil */
     .acciones {
         grid-template-columns: 1fr 1fr;
     }
 }
 
 @media (max-width: 480px) {
-    .header {
-        padding: 10px;
-    }
-    
-    .saludo {
-        margin: 0 5px;
-    }
-    
-    .bienvenida {
-        font-size: 12px;
-    }
-    
-    .logo-area img {
-        height: 30px;
-    }
+    .header { padding: 10px; }
+    .saludo { margin: 0 5px; }
+    .bienvenida { font-size: 12px; }
+    .logo-area img { height: 30px; }
+    .acciones { grid-template-columns: 1fr 1fr; }
 }
 </style>
 
@@ -483,7 +489,7 @@ body {
         <canvas id="graficoMorosidad"></canvas>
     </div>
 
-    <!-- FILTRO MES/AÑO — DESPUÉS DE MOROSIDAD -->
+    <!-- FILTRO MES/AÑO -->
     <form method="GET" action="/dashboard/" class="filtro">
         <span>📅 Filtrar por mes:</span>
         <select name="mes">
@@ -511,7 +517,6 @@ body {
     <!-- RESUMEN DEL MES -->
     <div class="lista">
         <h3>📋 Resumen del mes seleccionado</h3>
-
         <div class="mini-cards">
             <div class="mini-card" style="background:#dcfce7;">
                 <div class="valor" style="color:#166534;">${{ gastos_mes }}</div>
@@ -568,7 +573,6 @@ body {
         {% else %}
         <p style="color:#999;">No hay pagos aprobados para este mes.</p>
         {% endif %}
-
     </div>
 
     <!-- LOTES PENDIENTES -->
@@ -759,35 +763,44 @@ window.addEventListener('scroll', () => {
     ultimoScroll = scrollActual;
 });
 
-// Menú hamburguesa toggle
+// Menú hamburguesa — desliza desde la derecha
 const menuToggle = document.getElementById('menuToggle');
 const mainMenu = document.getElementById('mainMenu');
 
-menuToggle.addEventListener('click', function() {
+// Crear overlay
+const menuOverlay = document.createElement('div');
+menuOverlay.className = 'menu-overlay';
+document.body.appendChild(menuOverlay);
+
+menuToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
     mainMenu.classList.toggle('open');
+    menuOverlay.classList.toggle('active');
+    document.body.style.overflow = mainMenu.classList.contains('open') ? 'hidden' : '';
 });
 
+// Cerrar al click en overlay
+menuOverlay.addEventListener('click', function() {
+    mainMenu.classList.remove('open');
+    menuOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+});
+
+// Cerrar al seleccionar un link
 document.querySelectorAll('#mainMenu a').forEach(link => {
     link.addEventListener('click', () => {
         mainMenu.classList.remove('open');
+        menuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
     });
 });
 
-document.addEventListener('click', function(event) {
-    if (!menuToggle.contains(event.target) && !mainMenu.contains(event.target)) {
-        mainMenu.classList.remove('open');
-    }
-});
-
+// Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/static/service-worker.js')
-            .then(registration => {
-                console.log('✅ Service Worker registrado en:', registration.scope);
-            })
-            .catch(error => {
-                console.log('❌ Error:', error);
-            });
+            .then(r => console.log('✅ SW registrado:', r.scope))
+            .catch(e => console.log('❌ SW error:', e));
     });
 }
 </script>
