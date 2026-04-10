@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin conexión - Planta Digital</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .offline-card {
+            background: white;
+            max-width: 400px;
+            margin: auto;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        h2 { color: #14532d; }
+        .emoji { font-size: 64px; margin-bottom: 20px; }
+        button {
+            background: #14532d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        button:hover { background: #166534; }
+    </style>
+</head>
+<body>
+    <div class="offline-card">
+        <div class="emoji">📡</div>
+        <h2>Sin conexión a internet</h2>
+        <p>Conectate a internet para seguir usando Planta Digital.</p>
+        <button onclick="location.reload()">Reintentar</button>
+    </div>
+</body>
+</html>

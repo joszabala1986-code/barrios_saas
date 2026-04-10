@@ -1,0 +1,23 @@
+<h1>Panel Planta Digital</h1>
+
+<p>Total barrios: {{ barrios.count }}</p>
+
+<p>Total usuarios: {{ usuarios }}</p>
+
+<table border="1">
+
+<tr>
+<th>Barrio</th>
+<th>Usuarios</th>
+</tr>
+
+{% for b in barrios %}
+
+<tr>
+<td>{{ b.nombre }}</td>
+<td>{{ b.usuario_set.count }}</td>
+</tr>
+
+{% endfor %}
+
+</table>

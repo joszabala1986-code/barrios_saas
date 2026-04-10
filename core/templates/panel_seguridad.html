@@ -1,0 +1,528 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seguridad - {{ barrio.nombre }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f9ff;
+        }
+
+        /* NAVBAR */
+        .nav {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-left {
+            flex: 1;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .nav-center {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .nav-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-volver, .btn-exportar {
+            background: #374151;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-exportar {
+            background: #16a34a;
+        }
+
+        .btn-volver:hover {
+            background: #4b5563;
+        }
+
+        .btn-exportar:hover {
+            background: #15803d;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .main-container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* BOTONES SUPERIORES - SOLO AGREGAR PERSONAL */
+        .acciones {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* GRID DE DOS COLUMNAS */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        /* TARJETAS */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card h3 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 18px;
+        }
+
+        /* BUSCADORES */
+        .buscador {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        input[type="date"].buscador {
+            width: auto;
+            min-width: 150px;
+        }
+
+        /* LISTA CON SCROLL */
+        .lista-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+        }
+
+        .item:hover {
+            background: #f8fafc;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .item-actions a {
+            text-decoration: none;
+            font-size: 18px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .item-actions a:hover {
+            opacity: 0.7;
+        }
+
+        /* Items de movimientos */
+        .item-movimiento {
+            padding: 10px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .item-movimiento:hover {
+            background: #f8fafc;
+        }
+
+        .fecha-movimiento {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .empty-message {
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        /* Scrollbar personalizado */
+        .lista-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .lista-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .lista-scroll::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        .lista-scroll::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* POPUP */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+        }
+
+        .popup-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .popup-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .popup-header .cerrar-popup {
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .popup-header .cerrar-popup:hover {
+            opacity: 0.7;
+        }
+
+        .popup-body {
+            padding: 20px;
+        }
+
+        .dato {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dato-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dato-valor {
+            font-size: 15px;
+            color: #333;
+            margin-top: 5px;
+            word-break: break-word;
+        }
+
+        .foto-dni {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .foto-dni img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-cerrar {
+            width: 100%;
+            padding: 12px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-cerrar:hover {
+            background: #2563eb;
+        }
+
+        /* Mensaje informativo */
+        .info-movimientos {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #92400e;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .nav {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-left, .nav-center, .nav-right {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div class="nav-left">🏘️ {{ barrio.nombre }}</div>
+    <div class="nav-center">👮 Panel de Seguridad</div>
+    <div class="nav-right">
+        <a href="{% url 'dashboard' %}" class="btn-volver">⬅ Volver al Dashboard</a>
+        <a href="{% url 'exportar_excel' barrio.id %}" class="btn-exportar">📊 Exportar Excel</a>
+    </div>
+</div>
+
+<div class="main-container">
+    <div class="acciones">
+        <a href="{% url 'crear_seguridad' barrio.id %}" class="btn">➕ Agregar Personal de Seguridad</a>
+        <!-- ✅ BOTONES DE INGRESO/EGRESO ELIMINADOS -->
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>👮 Personal de Seguridad</h3>
+            <input type="text" id="buscarSeguridad" class="buscador" placeholder="🔍 Buscar por nombre o DNI...">
+            <div class="lista-scroll" id="listaSeguridad">
+                {% for p in personal %}
+                <div class="item" data-nombre="{{ p.nombre_apellido|lower }}" data-dni="{{ p.dni }}">
+                    <div class="item-info">
+                        <strong>{{ p.nombre_apellido }}</strong><br>
+                        <small style="color:#64748b;">DNI: {{ p.dni }} | Edad: {{ p.edad }} años</small>
+                    </div>
+                    <div class="item-actions">
+                        <a href="javascript:void(0);" onclick="verDetalle({{ p.id }})" title="Ver detalles">👁️</a>
+                        <a href="{% url 'editar_seguridad' p.id %}" title="Editar">✏️</a>
+                        <a href="{% url 'eliminar_seguridad' p.id %}" onclick="return confirm('¿Eliminar a {{ p.nombre_apellido }}?');" title="Eliminar">🗑️</a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-message">📭 No hay personal de seguridad cargado</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📋 Registro de Movimientos</h3>
+            <!-- Mensaje informativo sobre dónde registrar movimientos -->
+            <div class="info-movimientos">
+                ℹ️ Los ingresos y egresos se registran desde el <strong>Panel del Guardia</strong>.
+                <br>El personal de seguridad debe iniciar sesión en <strong>/seguridad/login/</strong>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                <input type="date" id="fechaFiltro" class="buscador" style="width: auto; margin-bottom: 0;">
+                <input type="text" id="patenteFiltro" class="buscador" placeholder="🔍 Buscar por patente..." style="flex: 1; margin-bottom: 0;">
+                <select id="tipoFiltro" class="buscador" style="width: auto; margin-bottom: 0;">
+                    <option value="todos">Todos</option>
+                    <option value="ingreso">🚪 Ingresos</option>
+                    <option value="egreso">🚶 Egresos</option>
+                </select>
+            </div>
+            <div class="lista-scroll" id="listaMovimientos">
+                {% for i in ingresos %}
+                <div class="item-movimiento" data-fecha="{{ i.fecha_hora|date:'Y-m-d' }}" data-patente="{{ i.patente|lower }}" data-tipo="ingreso">
+                    <span class="fecha-movimiento">🟢 INGRESO</span><br>
+                    <strong>📅 {{ i.fecha_hora|date:"d/m/Y H:i" }}</strong><br>
+                    👤 {{ i.nombre_apellido }}<br>
+                    🚗 Patente: {{ i.patente }}<br>
+                    🆔 DNI: {{ i.dni }}<br>
+                    {% if i.observaciones %}📝 {{ i.observaciones }}<br>{% endif %}
+                    <small>Registrado por: {{ i.registrado_por.nombre_apellido }}</small>
+                </div>
+                {% endfor %}
+                {% for e in egresos %}
+                <div class="item-movimiento" data-fecha="{{ e.fecha_hora|date:'Y-m-d' }}" data-patente="{{ e.patente|lower }}" data-tipo="egreso">
+                    <span class="fecha-movimiento">🔴 EGRESO</span><br>
+                    <strong>📅 {{ e.fecha_hora|date:"d/m/Y H:i" }}</strong><br>
+                    👤 {{ e.nombre_apellido }}<br>
+                    🚗 Patente: {{ e.patente }}<br>
+                    🆔 DNI: {{ e.dni }}<br>
+                    {% if e.observaciones %}📝 {{ e.observaciones }}<br>{% endif %}
+                    <small>Registrado por: {{ e.registrado_por.nombre_apellido }}</small>
+                </div>
+                {% empty %}
+                <div class="empty-message">📭 No hay movimientos registrados</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupDetalle" class="popup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3>👮 Detalles del Guardia</h3>
+            <span class="cerrar-popup" onclick="cerrarPopup();">&times;</span>
+        </div>
+        <div class="popup-body" id="popupBody"><div style="text-align:center;padding:20px;">Cargando...</div></div>
+        <button class="btn-cerrar" onclick="cerrarPopup();">Cerrar</button>
+    </div>
+</div>
+
+<script>
+var personalData = [];
+{% for p in personal %}
+personalData.push({
+    id: {{ p.id }},
+    nombre: "{{ p.nombre_apellido|escapejs }}",
+    dni: "{{ p.dni|escapejs }}",
+    edad: "{{ p.edad }}",
+    fecha_ingreso: "{{ p.fecha_ingreso|date:'d/m/Y' }}",
+    email: "{{ p.usuario.email|default:'No registrado'|escapejs }}",
+    usuario: "{{ p.usuario.username|escapejs }}",
+    foto_dni: "{% if p.foto_dni %}{{ p.foto_dni.url }}{% else %}{% static 'img/no-image.png' %}{% endif %}"
+});
+{% endfor %}
+
+function verDetalle(id) {
+    var guardia = null;
+    for (var i = 0; i < personalData.length; i++) {
+        if (personalData[i].id === id) { guardia = personalData[i]; break; }
+    }
+    if (guardia === null) return;
+    var html = '<div class="dato"><div class="dato-label">👤 Nombre</div><div class="dato-valor">' + guardia.nombre + '</div></div>';
+    html += '<div class="dato"><div class="dato-label">🆔 DNI</div><div class="dato-valor">' + guardia.dni + '</div></div>';
+    html += '<div class="dato"><div class="dato-label">📅 Edad</div><div class="dato-valor">' + guardia.edad + ' años</div></div>';
+    html += '<div class="dato"><div class="dato-label">📆 Ingreso</div><div class="dato-valor">' + guardia.fecha_ingreso + '</div></div>';
+    html += '<div class="dato"><div class="dato-label">📧 Email</div><div class="dato-valor">' + guardia.email + '</div></div>';
+    html += '<div class="dato"><div class="dato-label">🔑 Usuario</div><div class="dato-valor">' + guardia.usuario + '</div></div>';
+    html += '<div class="foto-dni"><div class="dato-label">📎 Foto DNI</div><img src="' + guardia.foto_dni + '" style="max-width:100%;border-radius:8px;"></div>';
+    document.getElementById('popupBody').innerHTML = html;
+    document.getElementById('popupDetalle').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarPopup() {
+    document.getElementById('popupDetalle').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+window.onclick = function(e) { if (e.target === document.getElementById('popupDetalle')) cerrarPopup(); };
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') cerrarPopup(); });
+
+function filtrarSeguridad() {
+    var filtro = document.getElementById('buscarSeguridad').value.toLowerCase();
+    var items = document.querySelectorAll('#listaSeguridad .item');
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var texto = (item.getAttribute('data-nombre') || '') + ' ' + (item.getAttribute('data-dni') || '');
+        item.style.display = texto.indexOf(filtro) !== -1 ? 'flex' : 'none';
+    }
+}
+
+function filtrarMovimientos() {
+    var fecha = document.getElementById('fechaFiltro').value;
+    var patente = document.getElementById('patenteFiltro').value.toLowerCase();
+    var tipo = document.getElementById('tipoFiltro').value;
+    var items = document.querySelectorAll('#listaMovimientos .item-movimiento');
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var fechaItem = item.getAttribute('data-fecha') || '';
+        var patenteItem = item.getAttribute('data-patente') || '';
+        var tipoItem = item.getAttribute('data-tipo') || '';
+        var ok = (fecha === '' || fechaItem === fecha) && (patente === '' || patenteItem.indexOf(patente) !== -1) && (tipo === 'todos' || tipoItem === tipo);
+        item.style.display = ok ? 'block' : 'none';
+    }
+}
+
+document.getElementById('buscarSeguridad').addEventListener('keyup', filtrarSeguridad);
+document.getElementById('fechaFiltro').addEventListener('change', filtrarMovimientos);
+document.getElementById('patenteFiltro').addEventListener('keyup', filtrarMovimientos);
+document.getElementById('tipoFiltro').addEventListener('change', filtrarMovimientos);
+</script>
+</body>
+</html>

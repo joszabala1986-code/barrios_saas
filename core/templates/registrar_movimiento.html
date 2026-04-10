@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ tipo|title }}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body{
+            margin:0;
+            font-family:Arial;
+            background:#e0f2fe;
+        }
+
+        .nav{
+            background:#1e3a8a;
+            color:white;
+            padding:15px;
+            text-align:center;
+        }
+
+        .container{
+            padding:20px;
+        }
+
+        input, textarea{
+            width:100%;
+            padding:15px;
+            margin-bottom:15px;
+            border-radius:10px;
+            border:1px solid #ccc;
+            font-size:16px;
+        }
+
+        button{
+            width:100%;
+            padding:18px;
+            border:none;
+            border-radius:10px;
+            font-size:18px;
+        }
+
+        .guardar{
+            background:#22c55e;
+            color:white;
+        }
+
+        .volver{
+            background:#6b7280;
+            color:white;
+            margin-top:10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="nav">
+    {{ tipo|title }}
+</div>
+
+<div class="container">
+
+<form method="post">
+    {% csrf_token %}
+
+    <input type="text" name="patente" placeholder="Patente" required>
+    <input type="text" name="nombre" placeholder="Nombre y Apellido" required>
+    <input type="text" name="dni" placeholder="DNI" required>
+
+    <textarea name="observaciones" placeholder="Observaciones"></textarea>
+
+    <button type="submit" class="guardar">
+        Guardar {{ tipo }}
+    </button>
+</form>
+
+<a href="{% url 'panel_guardia' %}">
+    <button class="volver">⬅ Volver</button>
+</a>
+
+</div>
+
+</body>
+</html>

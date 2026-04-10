@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Editar factura</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+padding:30px;
+}
+
+.card{
+max-width:500px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+h2{
+color:#14532d;
+margin-top:0;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-bottom:15px;
+border-radius:6px;
+border:1px solid #ddd;
+}
+
+button{
+background:#14532d;
+color:white;
+border:none;
+padding:12px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+width:100%;
+}
+
+button:hover{
+background:#166534;
+}
+
+.botones{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.volver{
+flex:1;
+background:#6b7280;
+color:white;
+text-decoration:none;
+padding:12px;
+border-radius:8px;
+text-align:center;
+font-weight:bold;
+}
+
+.volver:hover{
+background:#4b5563;
+}
+
+button{
+flex:1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Editar factura</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<label>Descripción</label>
+<input type="text" name="descripcion" value="{{ factura.descripcion }}">
+
+<label>Monto</label>
+<input type="text" name="monto" id="monto" value="{{ factura.monto }}">
+
+<label>Reemplazar comprobante</label>
+<input type="file" name="archivo">
+
+<div class="botones">
+
+<button type="submit">Guardar cambios</button>
+
+<a href="/facturas/" class="volver">Volver</a>
+
+</div>
+
+</form>
+
+</div>
+
+<script>
+
+document.getElementById("monto").addEventListener("input", function(e){
+
+let valor = e.target.value.replace(/\./g,"");
+
+valor = Number(valor).toLocaleString("es-AR");
+
+e.target.value = valor;
+
+});
+
+</script>
+</body>
+
+</html>

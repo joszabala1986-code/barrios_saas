@@ -1,0 +1,335 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Nuevo comunicado - Planta Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-area img {
+            height: 40px;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            color: #14532d;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+            text-align: center;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #14532d;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .card p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            resize: none;
+            font-family: inherit;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus { border-color: #14532d; }
+
+        .info {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        /* CONTADOR DE CARACTERES */
+        .contador {
+            font-size: 12px;
+            text-align: right;
+            margin-top: 4px;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .contador.cerca { color: #f59e0b; }
+        .contador.lleno { color: #dc2626; font-weight: bold; }
+
+        /* FECHA LIMITE */
+        .fecha-grupo {
+            margin-top: 18px;
+            text-align: left;
+        }
+
+        .fecha-grupo label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .fecha-grupo input[type="date"] {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        .fecha-grupo input[type="date"]:focus {
+            border-color: #14532d;
+        }
+
+        .fecha-hint {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        /* PREVIEW */
+        .preview {
+            display: none;
+            background: #f0fdf4;
+            border-left: 4px solid #14532d;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            text-align: left;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .preview.visible { display: block; }
+
+        .preview strong { color: #14532d; }
+
+        button {
+            background: #14532d;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(20,83,45,0.2);
+        }
+
+        button:hover {
+            background: #166534;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(20,83,45,0.25);
+        }
+
+        .volver {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: rgba(100,116,139,0.08);
+            border: 1px solid rgba(100,116,139,0.1);
+            margin-top: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .volver:hover {
+            background: rgba(100,116,139,0.15);
+            color: #1e293b;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 24px; }
+        }
+
+        @keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.alert-success {
+    animation: slideIn 0.3s ease;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo-area">
+        <img src="{% static 'img/PD_LOGO.png' %}">
+        <div class="logo-text">Planta Digital — {{ barrio.nombre }}</div>
+    </div>
+</div>
+
+<div class="container">
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success" style="
+            background: #dcfce7;
+            border-left: 4px solid #22c55e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #166534;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        ">
+            <span style="font-size: 20px;">✅</span>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <h2>📢 Nuevo comunicado</h2>
+        <p>Este mensaje será visible para los vecinos del barrio hasta la fecha límite que elijas.</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- MENSAJE -->
+            <textarea
+                name="mensaje"
+                id="mensaje"
+                maxlength="500"
+                placeholder="Escribí aquí el mensaje para los vecinos..."
+                required
+                oninput="actualizarContador()"></textarea>
+
+            <div class="contador" id="contador">0 / 500</div>
+            <p class="info">⚠️ Máximo 500 caracteres</p>
+
+            <!-- FECHA LÍMITE -->
+            <div class="fecha-grupo">
+                <label>📅 Fecha límite del comunicado</label>
+                <input
+                    type="date"
+                    name="fecha_limite"
+                    id="fecha_limite"
+                    min="{{ hoy }}"
+                    oninput="actualizarPreview()">
+                <p class="fecha-hint">
+                    Si no elegís fecha, el mensaje desaparece automáticamente a los 7 días.
+                </p>
+            </div>
+
+            <!-- PREVIEW -->
+            <div class="preview" id="preview">
+                <strong>Vista previa:</strong><br>
+                El comunicado estará visible hasta el <span id="preview-fecha" style="font-weight:bold; color:#14532d;"></span>
+            </div>
+
+            <button type="submit">✉️ Enviar comunicado</button>
+        </form>
+
+        <a class="volver" href="{% url 'lotes' %}">← Volver a lotes</a>
+    </div>
+</div>
+
+<script>
+// Contador de caracteres
+function actualizarContador() {
+    const textarea = document.getElementById('mensaje');
+    const contador = document.getElementById('contador');
+    const len = textarea.value.length;
+    contador.textContent = len + ' / 500';
+    contador.className = 'contador';
+    if (len >= 450) contador.classList.add('cerca');
+    if (len >= 490) contador.classList.add('lleno');
+}
+
+// Preview de fecha
+function actualizarPreview() {
+    const fecha = document.getElementById('fecha_limite').value;
+    const preview = document.getElementById('preview');
+    const previewFecha = document.getElementById('preview-fecha');
+
+    if (fecha) {
+        // Formatear fecha en español
+        const [anio, mes, dia] = fecha.split('-');
+        const meses = ['enero','febrero','marzo','abril','mayo','junio',
+                       'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+        previewFecha.textContent = `${parseInt(dia)} de ${meses[parseInt(mes)-1]} de ${anio}`;
+        preview.classList.add('visible');
+    } else {
+        preview.classList.remove('visible');
+    }
+}
+
+// Setear fecha mínima como hoy
+const hoy = new Date().toISOString().split('T')[0];
+document.getElementById('fecha_limite').min = hoy;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,466 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Lotes — {{ barrio.nombre }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* --- HEADER --- */
+.header {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 14px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.35s ease;
+}
+
+.header.oculto {
+    transform: translateY(-100%);
+}
+
+.logo-area img {
+    height: 38px;
+}
+
+.header-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: rgba(20,83,45,0.08);
+    color: #14532d;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    border-radius: 50px;
+    border: 1px solid rgba(20,83,45,0.15);
+    transition: all 0.3s;
+}
+
+.header-volver:hover {
+    background: rgba(20,83,45,0.15);
+    transform: translateX(-3px);
+}
+
+/* --- CONTENEDOR --- */
+.container {
+    padding: 25px 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #14532d;
+    margin-bottom: 20px;
+}
+
+/* --- CARD LOTE --- */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    border-left: 4px solid #14532d;
+}
+
+.lote {
+    font-weight: bold;
+    color: #14532d;
+    font-size: 18px;
+    margin: 0 0 6px 0;
+}
+
+.propietario {
+    color: #555;
+    font-size: 14px;
+    margin: 0 0 14px 0;
+}
+
+/* --- BOTONES --- */
+.botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 14px;
+    background: #14532d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover { background: #166534; }
+
+.btn-adelanto {
+    background: #2563eb;
+}
+.btn-adelanto:hover { background: #1d4ed8; }
+
+.btn-comunicado {
+    background: #7c3aed;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+.btn-comunicado:hover { background: #6d28d9; }
+
+/* --- BARRA ACCIONES --- */
+.barra-acciones {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+/* --- MODAL --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+.modal-box {
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+.modal-box h3 {
+    color: #14532d;
+    margin-top: 0;
+}
+
+.modal-info {
+    background: #f0fdf4;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    color: #166534;
+    line-height: 1.7;
+}
+
+.modal-label {
+    font-weight: 600;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.modal-file {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.grid-meses {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.modal-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-confirmar {
+    flex: 1;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+.btn-confirmar:hover { background: #1d4ed8; }
+
+.btn-cancelar {
+    flex: 1;
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+.btn-cancelar:hover { background: #4b5563; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 600px) {
+    .container { padding: 16px; }
+    .header { padding: 12px 16px; }
+    .botones { gap: 6px; }
+    .btn { font-size: 12px; padding: 7px 11px; }
+    .grid-meses { grid-template-columns: 1fr 1fr; }
+    .modal-btns { flex-direction: column; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- HEADER STICKY -->
+<div class="header" id="mainHeader">
+    <div class="logo-area">
+        <img src="{% static 'img/PD_LOGO.png' %}" alt="Logo">
+    </div>
+    <a class="header-volver" href="/dashboard/">← Volver al panel</a>
+</div>
+
+<!-- CONTENIDO -->
+<div class="container">
+
+    <h2>🏘 Lotes del barrio {{ barrio.nombre }}</h2>
+
+    <div class="barra-acciones">
+        <a href="/crear-comunicado/" class="btn-comunicado">
+            📢 Enviar comunicado a vecinos
+        </a>
+    </div>
+
+    {% for propiedad in propiedades %}
+    <div class="card">
+
+        <p class="lote">Lote {{ propiedad.numero_lote }}</p>
+        <p class="propietario">
+            👤 {{ propiedad.propietario.first_name }} {{ propiedad.propietario.last_name }}
+        </p>
+
+        <div class="botones">
+            <a class="btn" href="/crear-deuda/{{ propiedad.id }}/">➕ Nueva deuda</a>
+            <a class="btn" href="/lote/{{ propiedad.id }}/">📋 Ver ficha</a>
+            <a class="btn btn-adelanto" href="#"
+               onclick="abrirAdelanto(
+                   '{{ propiedad.id }}',
+                   '{{ propiedad.numero_lote }}',
+                   '{{ propiedad.propietario.first_name }} {{ propiedad.propietario.last_name }}',
+                   '{{ propiedad.meses_pagados_json }}'
+               ); return false;">
+               💳 Pago adelantado
+            </a>
+        </div>
+
+    </div>
+    {% empty %}
+    <p>No hay lotes registrados.</p>
+    {% endfor %}
+
+</div>
+
+<!-- MODAL PAGO ADELANTADO -->
+<div class="modal-overlay" id="modalAdelanto">
+    <div class="modal-box">
+
+        <h3>💳 Pago adelantado de expensas</h3>
+
+        <div class="modal-info">
+            <b>Lote:</b> <span id="adelanto-lote"></span><br>
+            <b>Propietario:</b> <span id="adelanto-propietario"></span>
+        </div>
+
+        <form method="POST" action="/pago-adelantado/" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="propiedad_id" id="adelanto-propiedad-id">
+
+            <label class="modal-label">💰 Monto total a abonar</label>
+            <input type="text" name="monto" class="modal-input"
+                   placeholder="Ej: 150000" required>
+
+            <label class="modal-label">
+                📅 Seleccioná los meses a abonar (año {{ anio_actual }})
+            </label>
+
+            <div class="grid-meses" id="grid-meses">
+                <!-- Se llena dinámicamente por JS -->
+            </div>
+
+            <label class="modal-label">📎 Adjuntar comprobante</label>
+            <input type="file" name="comprobante"
+                   accept=".pdf,.jpg,.jpeg,.png"
+                   class="modal-file" required>
+
+            <div class="modal-btns">
+                <button type="submit" class="btn-confirmar">
+                    ✅ Registrar pago adelantado
+                </button>
+                <button type="button" class="btn-cancelar"
+                        onclick="cerrarAdelanto()">
+                    Cancelar
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+// --- SCROLL HEADER OCULTAR ---
+// Solo se oculta al bajar, aparece al subir o cuando estás arriba del todo
+let ultimoScroll = 0;
+const header = document.getElementById('mainHeader');
+
+window.addEventListener('scroll', () => {
+    const scrollActual = window.scrollY;
+    if (scrollActual > ultimoScroll && scrollActual > 60) {
+        header.classList.add('oculto');
+    } else {
+        header.classList.remove('oculto');
+    }
+    ultimoScroll = scrollActual;
+});
+
+// --- MODAL PAGO ADELANTADO ---
+const MESES = [
+    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+];
+
+function abrirAdelanto(propiedadId, lote, propietario, mesesPagados) {
+    document.getElementById('adelanto-propiedad-id').value = propiedadId;
+    document.getElementById('adelanto-lote').textContent = lote;
+    document.getElementById('adelanto-propietario').textContent = propietario;
+
+    const grid = document.getElementById('grid-meses');
+    grid.innerHTML = '';
+
+    MESES.forEach((nombre, i) => {
+        const num = i + 1;
+        const pagado = mesesPagados.includes(num);
+
+        const label = document.createElement('label');
+        label.style.cssText = [
+            'display:flex',
+            'align-items:center',
+            'gap:6px',
+            `background:${pagado ? '#dcfce7' : '#f8fafc'}`,
+            'padding:8px 10px',
+            'border-radius:8px',
+            `border:1px solid ${pagado ? '#86efac' : '#e2e8f0'}`,
+            `cursor:${pagado ? 'not-allowed' : 'pointer'}`,
+            'font-size:13px',
+            `opacity:${pagado ? '0.7' : '1'}`
+        ].join(';');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'meses';
+        checkbox.value = num;
+        if (pagado) {
+            checkbox.disabled = true;
+            checkbox.checked = true;
+        }
+
+        const textoMes = document.createTextNode(' ' + nombre);
+
+        label.appendChild(checkbox);
+        label.appendChild(textoMes);
+
+        if (pagado) {
+            const tick = document.createElement('span');
+            tick.style.cssText = 'font-size:10px;color:#16a34a;margin-left:auto;';
+            tick.textContent = '✓ Pagado';
+            label.appendChild(tick);
+        }
+
+        grid.appendChild(label);
+    });
+
+    document.getElementById('modalAdelanto').style.display = 'flex';
+}
+
+function cerrarAdelanto() {
+    document.getElementById('modalAdelanto').style.display = 'none';
+}
+
+// Cerrar al click fuera del modal
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById('modalAdelanto');
+    if (e.target === modal) cerrarAdelanto();
+});
+</script>
+
+<script>
+// Registrar Service Worker - OFFLINE
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/service-worker.js')
+            .then(registration => {
+                console.log('✅ Service Worker registrado en:', registration.scope);
+            })
+            .catch(error => {
+                console.log('❌ Error:', error);
+            });
+    });
+}
+</script>
+</body>
+
+</body>
+</html>

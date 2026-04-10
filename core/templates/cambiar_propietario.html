@@ -1,0 +1,195 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Editar propietario</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:0;
+}
+
+.header{
+background:white;
+padding:15px 30px;
+display:flex;
+align-items:center;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.logo-area{
+display:flex;
+align-items:center;
+}
+
+.logo-area img{
+height:40px;
+margin-right:10px;
+}
+
+.logo-text{
+font-size:22px;
+font-weight:bold;
+color:#14532d;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+padding:30px;
+}
+
+.card{
+
+background:white;
+
+padding:25px;
+
+border-radius:10px;
+
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+
+}
+
+.card h2{
+margin-top:0;
+color:#14532d;
+}
+
+input{
+
+width:100%;
+
+padding:10px;
+
+margin-bottom:12px;
+
+border-radius:6px;
+
+border:1px solid #ddd;
+
+}
+
+.lote{
+
+background:#f0fdf4;
+
+padding:10px;
+
+border-radius:6px;
+
+margin-bottom:15px;
+
+font-weight:bold;
+
+color:#14532d;
+
+}
+
+button{
+
+background:#14532d;
+
+color:white;
+
+border:none;
+
+padding:12px;
+
+border-radius:6px;
+
+width:100%;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+button:hover{
+background:#166534;
+}
+
+.volver{
+
+display:block;
+
+text-align:center;
+
+margin-top:15px;
+
+color:#14532d;
+
+text-decoration:none;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<div class="logo-area">
+<img src="{% static 'img/logo_planta_digital.png' %}">
+<div class="logo-text">Editar propietario</div>
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Modificar propietario</h2>
+
+<div class="lote">
+Lote {{ propiedad.numero_lote }} (no editable)
+</div>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<input type="text" name="username" value="{{ usuario.username }}" placeholder="Usuario">
+
+<input type="text" name="nombre" value="{{ usuario.first_name }}" placeholder="Nombre">
+
+<input type="text" name="apellido" value="{{ usuario.last_name }}" placeholder="Apellido">
+
+<input type="email" name="email" value="{{ usuario.email }}" placeholder="Email">
+
+<input type="text" name="celular" value="{{ usuario.celular }}" placeholder="Celular">
+
+<input type="password" name="password" placeholder="Nueva contraseña (opcional)">
+
+<button type="submit">
+
+Guardar cambios
+
+</button>
+
+</form>
+
+<a class="volver" href="/lote/{{ propiedad.id }}/">
+
+← Volver a ficha del lote
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

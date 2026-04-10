@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Seguridad — Planta Digital</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 36px 28px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .logo {
+            height: 55px;
+            margin-bottom: 14px;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .subtitulo {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .campo {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .campo label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .campo input:focus {
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30,58,138,0.08);
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 4px;
+        }
+
+        button:hover { background: #1e40af; }
+
+        .volver {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .volver a {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .volver a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="login-box">
+
+    <img src="{% static 'img/PD_LOGO01.png' %}" class="logo" alt="Planta Digital">
+    <h2>👮 Acceso Seguridad</h2>
+    <p class="subtitulo">Ingresá con tu DNI y contraseña</p>
+
+    {% if error %}
+    <div class="error">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="campo">
+            <label>DNI</label>
+            <input type="text" name="dni" placeholder="Número de DNI"
+                   inputmode="numeric" required autofocus>
+        </div>
+
+        <div class="campo">
+            <label>Contraseña</label>
+            <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit">Ingresar</button>
+    </form>
+
+    <p class="volver">
+        <a href="{% url 'login' %}">← Volver a Planta Digital</a>
+    </p>
+
+</div>
+
+</body>
+</html>

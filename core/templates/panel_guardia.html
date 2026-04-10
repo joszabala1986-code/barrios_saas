@@ -1,0 +1,455 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Panel Guardia - {{ seguridad.barrio.nombre }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f4ff;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            background: #1e3a8a;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left img {
+            height: 38px;
+        }
+
+        .header-info .nombre {
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+        }
+
+        .header-info .barrio-nombre {
+            font-size: 12px;
+            color: #93c5fd;
+        }
+
+        .btn-logout {
+            background: #dc2626;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover { background: #b91c1c; }
+
+        /* --- CONTENEDOR --- */
+        .container {
+            padding: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- BOTONES ACCIÓN --- */
+        .acciones {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .btn-accion {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-ingreso {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-ingreso:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(34,197,94,0.35);
+        }
+
+        .btn-egreso {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-egreso:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(239,68,68,0.35);
+        }
+
+        /* --- HISTORIAL --- */
+        .historial {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        }
+
+        .historial-titulo {
+            color: #1e3a8a;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lista-movimientos {
+            max-height: 480px;
+            overflow-y: auto;
+        }
+
+        .lista-movimientos::-webkit-scrollbar { width: 4px; }
+        .lista-movimientos::-webkit-scrollbar-track { background: #f1f5f9; }
+        .lista-movimientos::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .fila {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .fila:last-child { border-bottom: none; }
+
+        .fila-fecha {
+            font-weight: 600;
+            color: #475569;
+            min-width: 75px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .badge-ingreso { background: #dcfce7; color: #16a34a; }
+        .badge-egreso  { background: #fee2e2; color: #dc2626; }
+
+        .fila-patente {
+            font-family: monospace;
+            font-weight: bold;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .fila-nombre {
+            color: #334155;
+            flex: 1;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-end;
+            padding: 0;
+        }
+
+        .modal-overlay.activo {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px 20px 0 0;
+            padding: 28px 24px 32px;
+            animation: slideUp 0.3s ease;
+            margin: 0 auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        .modal-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-titulo.ingreso { color: #16a34a; }
+        .modal-titulo.egreso  { color: #dc2626; }
+
+        .modal-cerrar {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+            line-height: 1;
+        }
+
+        .modal-cerrar:hover { color: #334155; }
+
+        .campo {
+            margin-bottom: 14px;
+        }
+
+        .campo label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        .campo input,
+        .campo textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .campo input:focus,
+        .campo textarea:focus {
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30,58,138,0.08);
+        }
+
+        .campo textarea {
+            resize: none;
+            height: 70px;
+        }
+
+        .btn-guardar {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-guardar.ingreso { background: #22c55e; }
+        .btn-guardar.ingreso:hover { background: #16a34a; }
+        .btn-guardar.egreso  { background: #ef4444; }
+        .btn-guardar.egreso:hover  { background: #dc2626; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 480px) {
+            .header { padding: 12px 14px; }
+            .header-left img { height: 32px; }
+            .container { padding: 14px; }
+            .btn-accion { font-size: 14px; padding: 14px 10px; }
+            .modal-box { padding: 22px 18px 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-left">
+        <img src="{% static 'img/PD_LOGO01.png' %}" alt="Logo">
+        <div class="header-info">
+            <div class="nombre">{{ seguridad.nombre_apellido }}</div>
+            <div class="barrio-nombre">{{ seguridad.barrio.nombre }}</div>
+        </div>
+    </div>
+    <a href="{% url 'logout_seguridad' %}" class="btn-logout">🚪 Salir</a>
+</div>
+
+<!-- CONTENIDO -->
+<div class="container">
+
+    <!-- BOTONES PRINCIPALES -->
+    <div class="acciones">
+        <button class="btn-accion btn-ingreso" onclick="abrirModal('ingreso')">
+            🚪 Registrar Ingreso
+        </button>
+        <button class="btn-accion btn-egreso" onclick="abrirModal('egreso')">
+            🚶 Registrar Egreso
+        </button>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="historial">
+        <div class="historial-titulo">
+            📋 Últimos movimientos
+        </div>
+
+        <div class="lista-movimientos" id="listaMovimientos">
+            {% for m in movimientos %}
+            <div class="fila">
+                <div class="fila-fecha">{{ m.fecha_hora|date:"d/m H:i" }}</div>
+                <div class="badge {% if m.tipo == 'ingreso' %}badge-ingreso{% else %}badge-egreso{% endif %}">
+                    {{ m.tipo|title }}
+                </div>
+                <div class="fila-patente">{{ m.patente|default:"—" }}</div>
+                <div class="fila-nombre">{{ m.nombre_apellido }}</div>
+            </div>
+            {% empty %}
+            <div class="empty">📭 No hay movimientos registrados</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL REGISTRO -->
+<div class="modal-overlay" id="modalOverlay" onclick="cerrarModalFuera(event)">
+    <div class="modal-box">
+        <div class="modal-titulo" id="modalTitulo">
+            <span id="modalTituloTexto"></span>
+            <button class="modal-cerrar" onclick="cerrarModal()">×</button>
+        </div>
+
+        <form method="POST" id="formMovimiento">
+            {% csrf_token %}
+            <input type="hidden" name="tipo" id="campoTipo">
+
+            <div class="campo">
+                <label>🚗 Patente</label>
+                <input type="text" name="patente" placeholder="Ej: ABC123"
+                       maxlength="10" style="text-transform:uppercase;">
+            </div>
+
+            <div class="campo">
+                <label>👤 Nombre y Apellido</label>
+                <input type="text" name="nombre" placeholder="Nombre completo" required>
+            </div>
+
+            <div class="campo">
+                <label>🆔 DNI</label>
+                <input type="text" name="dni" placeholder="Número de DNI"
+                       inputmode="numeric" maxlength="10">
+            </div>
+
+            <div class="campo">
+                <label>📝 Observaciones (opcional)</label>
+                <textarea name="observaciones" placeholder="Alguna observación..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-guardar" id="btnGuardar">
+                Registrar
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+function abrirModal(tipo) {
+    const overlay  = document.getElementById('modalOverlay');
+    const titulo   = document.getElementById('modalTituloTexto');
+    const tituloEl = document.getElementById('modalTitulo');
+    const campo    = document.getElementById('campoTipo');
+    const btn      = document.getElementById('btnGuardar');
+    const form     = document.getElementById('formMovimiento');
+
+    campo.value = tipo;
+
+    if (tipo === 'ingreso') {
+        titulo.textContent  = '🚪 Registrar Ingreso';
+        tituloEl.className  = 'modal-titulo ingreso';
+        btn.className       = 'btn-guardar ingreso';
+        form.action         = "{% url 'registrar_ingreso' %}";
+    } else {
+        titulo.textContent  = '🚶 Registrar Egreso';
+        tituloEl.className  = 'modal-titulo egreso';
+        btn.className       = 'btn-guardar egreso';
+        form.action         = "{% url 'registrar_egreso' %}";
+    }
+
+    overlay.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModal() {
+    document.getElementById('modalOverlay').classList.remove('activo');
+    document.body.style.overflow = '';
+}
+
+function cerrarModalFuera(e) {
+    if (e.target === document.getElementById('modalOverlay')) {
+        cerrarModal();
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') cerrarModal();
+});
+</script>
+
+</body>
+</html>

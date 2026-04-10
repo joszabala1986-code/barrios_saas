@@ -1,0 +1,249 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Crear Personal de Seguridad - {{ barrio.nombre }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f9ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* HEADER */
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "👮";
+            font-size: 24px;
+        }
+
+        .btn-volver {
+            background: #374151;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            background: #4b5563;
+            transform: translateX(-2px);
+        }
+
+        /* CONTENEDOR */
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* TARJETA */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #1e3a8a;
+            font-size: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 18px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .help-text {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: -14px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 20px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .botones {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .header {
+                padding: 12px 15px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .btn-volver {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card h2 {
+                font-size: 18px;
+            }
+
+            input, select {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>Crear Personal de Seguridad</h1>
+    <a href="{% url 'panel_seguridad' barrio.id %}" class="btn-volver">
+        ← Volver al Panel
+    </a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h2>📋 Datos del Guardia</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="section-title">👤 Datos Personales</div>
+
+            <label>Nombre y Apellido *</label>
+            <input type="text" name="nombre_apellido" required placeholder="Ej: Juan Pérez">
+
+            <label>DNI *</label>
+            <input type="text" name="dni" required placeholder="Ej: 12345678">
+            <div class="help-text">El DNI será usado como usuario para login</div>
+
+            <label>Edad</label>
+            <input type="number" name="edad" placeholder="Ej: 30">
+
+            <label>Fecha de Ingreso</label>
+            <input type="date" name="fecha_ingreso">
+
+            <div class="section-title">🔐 Datos de Acceso</div>
+
+            <label>Email *</label>
+            <input type="email" name="email" required placeholder="correo@ejemplo.com">
+
+            <label>Contraseña *</label>
+            <input type="password" name="password" required placeholder="Mínimo 6 caracteres">
+
+            <div class="section-title">📎 Documentación</div>
+
+            <label>Foto del DNI</label>
+            <input type="file" name="foto_dni" accept="image/*">
+
+            <div class="botones">
+                <button type="submit">✅ Guardar Guardia</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

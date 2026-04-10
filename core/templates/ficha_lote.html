@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ficha del lote {{ propiedad.numero_lote }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* HEADER CON TÍTULO Y BOTÓN VOLVER */
+        .header {
+            background: white;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #14532d;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "🏠";
+            font-size: 24px;
+        }
+
+        .btn-volver {
+            background: #14532d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            background: #166534;
+            transform: translateX(-2px);
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* TARJETAS */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .card h3 {
+            color: #14532d;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card p {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .card p b {
+            color: #14532d;
+            width: 100px;
+            font-weight: 600;
+        }
+
+        /* BOTÓN EDITAR PROPIETARIO */
+        .btn-editar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #14532d;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            transition: background 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .btn-editar:hover {
+            background: #166534;
+        }
+
+        /* CONTENEDOR DE DEUDA */
+        .deuda-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 15px 0;
+        }
+
+        .deuda-item:last-child {
+            border-bottom: none;
+        }
+
+        .deuda-info {
+            margin-bottom: 12px;
+        }
+
+        .deuda-concepto {
+            font-weight: 600;
+            color: #14532d;
+        }
+
+        .deuda-monto {
+            font-weight: bold;
+            color: #dc2626;
+            font-size: 16px;
+        }
+
+        .deuda-estado {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            background: #fef08a;
+            color: #854d0e;
+        }
+
+        .btn-acciones {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .btn-pago {
+            background: #16a34a;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-pago:hover {
+            background: #15803d;
+        }
+
+        .btn-eliminar {
+            background: #dc2626;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-eliminar:hover {
+            background: #b91c1c;
+        }
+
+        .btn-ver-pago {
+            background: #2563eb;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: background 0.3s;
+            margin-left: 10px;
+        }
+
+        .btn-ver-pago:hover {
+            background: #1d4ed8;
+        }
+
+        /* PAGO ITEM */
+        .pago-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pago-item:last-child {
+            border-bottom: none;
+        }
+
+        .pago-info {
+            flex: 1;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+        }
+
+        /* POPUP */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .popup-content h3 {
+            color: #14532d;
+            margin-bottom: 15px;
+        }
+
+        .popup-content p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .popup-content p b {
+            color: #14532d;
+        }
+
+        .btn-cerrar {
+            background: #14532d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn-cerrar:hover {
+            background: #166534;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .header {
+                padding: 12px 15px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .btn-volver {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card p b {
+                width: 85px;
+            }
+
+            .btn-editar {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-acciones {
+                flex-direction: column;
+            }
+
+            .btn-pago, .btn-eliminar {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .pago-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-ver-pago {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card p {
+                flex-direction: column;
+            }
+            
+            .card p b {
+                width: auto;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER CON TÍTULO Y BOTÓN VOLVER -->
+<div class="header">
+    <h1>Ficha del Lote {{ propiedad.numero_lote }}</h1>
+    <a href="/lotes/" class="btn-volver">
+        ← Volver a lotes
+    </a>
+</div>
+
+<div class="container">
+    <!-- BOTÓN EDITAR PROPIETARIO -->
+    <a href="/cambiar-propietario/{{ propiedad.id }}/" class="btn-editar">
+        ✏️ Editar Propietario
+    </a>
+
+    <!-- TARJETA: DATOS DEL PROPIETARIO -->
+    <div class="card">
+        <h3>👤 Datos del propietario</h3>
+        <p><b>Nombre:</b> {{ propiedad.propietario.first_name }} {{ propiedad.propietario.last_name }}</p>
+        <p><b>Email:</b> {{ propiedad.propietario.email|default:"No registrado" }}</p>
+        <p><b>Celular:</b> {{ propiedad.propietario.celular|default:"No registrado" }}</p>
+        <p><b>Barrio:</b> {{ propiedad.barrio.nombre }}</p>
+    </div>
+
+    <!-- TARJETA: DEUDAS -->
+    <div class="card">
+        <h3>💰 Deudas pendientes</h3>
+        {% for deuda in deudas %}
+        <div class="deuda-item">
+            <div class="deuda-info">
+                <span class="deuda-concepto">{{ deuda.concepto }}</span><br>
+                <span class="deuda-monto">${{ deuda.monto }}</span>
+                <span class="deuda-estado">{{ deuda.estado|upper }}</span>
+                <small style="color:#666; display:block;">Vence: {{ deuda.vencimiento|date:"d/m/Y" }}</small>
+            </div>
+            <div class="btn-acciones">
+                <a href="/pago-efectivo/{{ deuda.id }}/" class="btn-pago" onclick="return confirm('¿Registrar pago en efectivo? Esta acción no se puede deshacer.')">
+                    💵 Pago en efectivo
+                </a>
+                <a href="/eliminar-deuda/{{ deuda.id }}/" class="btn-eliminar" onclick="return confirm('¿Eliminar esta deuda? Esta acción no se puede deshacer.')">
+                    🗑️ Eliminar
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-message">
+            ✅ No hay deudas pendientes
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- TARJETA: PAGOS REALIZADOS -->
+    <div class="card">
+        <h3>📋 Pagos realizados</h3>
+        {% for pago in pagos %}
+        <div class="pago-item">
+            <div class="pago-info">
+                <strong>📅 {{ pago.fecha_subida|date:"d/m/Y" }}</strong><br>
+                <span style="color:#16a34a; font-weight:bold;">${{ pago.deuda.monto }}</span>
+                <small style="color:#666;"> - {{ pago.deuda.concepto }}</small>
+            </div>
+            <button class="btn-ver-pago"
+                data-lote="{{ propiedad.numero_lote }}"
+                data-propietario="{{ propiedad.propietario.first_name }} {{ propiedad.propietario.last_name }}"
+                data-monto="{{ pago.deuda.monto }}"
+                data-forma="{{ pago.forma_pago|default:'Efectivo' }}"
+                data-fecha="{{ pago.fecha_subida|date:'d/m/Y H:i' }}"
+                onclick="verPago(this)">
+                👁️ Ver pago
+            </button>
+        </div>
+        {% empty %}
+        <div class="empty-message">
+            📭 No hay pagos registrados
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- POPUP PARA VER DETALLE DEL PAGO -->
+<div id="popupPago" class="popup">
+    <div class="popup-content">
+        <h3>📄 Ficha de pago</h3>
+        <p><b>🏠 Lote:</b> <span id="popupLote"></span></p>
+        <p><b>👤 Propietario:</b> <span id="popupPropietario"></span></p>
+        <p><b>💰 Monto:</b> $<span id="popupMonto"></span></p>
+        <p><b>💳 Forma de pago:</b> <span id="popupForma"></span></p>
+        <p><b>📅 Fecha:</b> <span id="popupFecha"></span></p>
+        <button class="btn-cerrar" onclick="cerrarPopup()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+    function verPago(elemento) {
+        const lote = elemento.dataset.lote;
+        const propietario = elemento.dataset.propietario;
+        const monto = elemento.dataset.monto;
+        const forma = elemento.dataset.forma;
+        const fecha = elemento.dataset.fecha;
+
+        document.getElementById("popupLote").innerText = lote;
+        document.getElementById("popupPropietario").innerText = propietario;
+        document.getElementById("popupMonto").innerText = monto;
+        document.getElementById("popupForma").innerText = forma;
+        document.getElementById("popupFecha").innerText = fecha;
+
+        document.getElementById("popupPago").style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+
+    function cerrarPopup() {
+        document.getElementById("popupPago").style.display = "none";
+        document.body.style.overflow = "";
+    }
+
+    // Cerrar popup al hacer clic fuera
+    window.onclick = function(event) {
+        const modal = document.getElementById("popupPago");
+        if (event.target == modal) {
+            cerrarPopup();
+        }
+    }
+
+    // Cerrar con tecla ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            cerrarPopup();
+        }
+    });
+</script>
+
+</body>
+</html>

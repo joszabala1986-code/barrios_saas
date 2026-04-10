@@ -1,0 +1,160 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Crear propietario</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:0;
+padding:30px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+h2{
+margin-top:0;
+color:#14532d;
+text-align: center;
+}
+
+label{
+font-weight:bold;
+color:#333;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.btn{
+flex:1;
+padding:12px;
+border-radius:6px;
+text-align:center;
+text-decoration:none;
+font-weight:bold;
+border:none;
+cursor:pointer;
+}
+
+.btn-crear{
+background:#14532d;
+color:white;
+}
+
+.btn-crear:hover{
+background:#166534;
+}
+
+.btn-volver{
+background:#6b7280;
+color:white;
+}
+
+.btn-volver:hover{
+background:#4b5563;
+}
+
+.logo{
+text-align:center;
+margin-bottom:20px;
+}
+
+.logo img{
+height: 50px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<div class="logo">
+<img src="{% static 'img/PD_LOGO.png' %}">
+</div>
+
+<h2>Nuevo propietario</h2>
+
+<form method="post">
+
+{% csrf_token %}
+
+<label>Usuario</label>
+<input type="text" name="username" placeholder="Ej: juanperez" required>
+
+<label>Nombre</label>
+<input type="text" name="nombre" placeholder="Juan" required>
+
+<label>Apellido</label>
+<input type="text" name="apellido" placeholder="Perez" required>
+
+<label>Email</label>
+<input type="email" name="email" placeholder="juan@email.com">
+
+<label>Contraseña</label>
+<input type="password" name="password" placeholder="********" required>
+
+<p>
+Celular<br>
+<input type="text" name="celular" placeholder="Ej: 2611234567">
+</p>
+
+<label>Número de lote</label>
+<input type="text" name="lote" placeholder="Ej: 14" required>
+
+<div class="buttons">
+
+<button class="btn btn-crear" type="submit">
+Crear propietario
+</button>
+
+<a class="btn btn-volver" href="/dashboard/">
+Volver
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

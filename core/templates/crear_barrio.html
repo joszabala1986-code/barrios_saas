@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Crear Barrio - Planta Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* HEADER CON TÍTULO Y BOTÓN VOLVER */
+        .header {
+            background: white;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #14532d;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "🏘️";
+            font-size: 24px;
+        }
+
+        .btn-volver {
+            background: #14532d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            background: #166534;
+            transform: translateX(-2px);
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* TARJETA DEL FORMULARIO */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #14532d;
+            font-size: 22px;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-title {
+            color: #14532d;
+            font-size: 16px;
+            margin: 20px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #14532d;
+        }
+
+        .help-text {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: -12px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #14532d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #166534;
+        }
+
+        .separator {
+            border-top: 1px solid #e2e8f0;
+            margin: 20px 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .header {
+                padding: 12px 15px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .btn-volver {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card h2 {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 14px;
+            }
+
+            input, select {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER CON TÍTULO Y BOTÓN VOLVER -->
+<div class="header">
+    <h1>Crear Nuevo Barrio</h1>
+    <a href="{% url 'panel_superadmin' %}" class="btn-volver">
+        ← Volver al panel
+    </a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h2>📋 Datos del Barrio</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>📛 Nombre del barrio *</label>
+            <input type="text" name="nombre" placeholder="Ej: Barrio Parque" required>
+
+            <label>🏦 CBU *</label>
+            <input type="text" name="cbu" placeholder="Ej: 1234567890123456789012" required>
+            <div class="help-text">CBU de la cuenta bancaria del barrio</div>
+
+            <label>📞 Teléfono</label>
+            <input type="text" name="telefono" placeholder="Ej: 11 1234-5678">
+
+            <div class="separator"></div>
+
+            <div class="section-title">🏦 Datos Bancarios para Transferencias</div>
+
+            <label>👤 Titular de la cuenta</label>
+            <input type="text" name="titular_cuenta" placeholder="Ej: Asociación Vecinal" value="Asociación Vecinal">
+
+            <label>📋 CUIT/CUIL</label>
+            <input type="text" name="cuit" placeholder="Ej: 30-12345678-9" value="30-12345678-9">
+
+            <label>🏛 Banco</label>
+            <input type="text" name="banco" placeholder="Ej: Banco Nación" value="Banco Nación">
+
+            <div class="separator"></div>
+
+            <div class="section-title">👤 Administrador del Barrio</div>
+
+            <label>👨‍💼 Usuario administrador *</label>
+            <input type="text" name="admin_usuario" placeholder="Ej: admin_barrio1" required>
+
+            <label>🔒 Contraseña inicial *</label>
+            <input type="password" name="admin_password" placeholder="Mínimo 6 caracteres" required>
+            <div class="help-text">El administrador podrá cambiar esta contraseña después</div>
+
+            <div class="separator"></div>
+
+            <div class="section-title">📅 Suscripción</div>
+
+            <label>📊 Plan</label>
+            <select name="plan">
+                <option value="mensual">Mensual</option>
+                <option value="semestral">Semestral</option>
+                <option value="anual">Anual</option>
+            </select>
+
+            <label>💰 Precio de suscripción</label>
+            <input type="number" step="0.01" name="precio_suscripcion" placeholder="0.00" value="0">
+
+            <button type="submit">✅ Crear Barrio</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,416 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Panel Superadmin - Planta Digital</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f4f6f9;
+        margin: 0;
+        padding-top: 70px;
+    }
+
+    /* TOPBAR FIJA */
+    .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #14532d;
+        color: white;
+        padding: 12px 20px;
+        box-sizing: border-box;
+        z-index: 1000;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* LOGO */
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .logo img {
+        height: 35px;
+    }
+
+    /* CENTRO - USUARIO */
+    .user-center {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    /* LOGOUT */
+    .logout-container {
+        margin-left: auto;
+    }
+
+    .logout {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 6px;
+        transition: background 0.3s;
+    }
+
+    .logout:hover {
+        text-decoration: underline;
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* BOTÓN CREAR */
+    .btn-crear {
+        display: inline-block;
+        background: #14532d;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-bottom: 20px;
+        transition: background 0.3s;
+    }
+
+    .btn-crear:hover {
+        background: #166534;
+    }
+
+    /* TARJETAS */
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+    .card h2 {
+        color: #14532d;
+        font-size: 20px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .card h3 {
+        color: #14532d;
+        font-size: 16px;
+        margin: 10px 0;
+    }
+
+    /* RESÚMENES */
+    .resumen {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .resumen-item {
+        flex: 1;
+        min-width: 150px;
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        border-left: 4px solid #14532d;
+    }
+
+    .resumen-item .numero {
+        font-size: 28px;
+        font-weight: bold;
+        color: #14532d;
+    }
+
+    .resumen-item .label {
+        font-size: 13px;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    /* LISTA DE BARRIOS */
+    .barrio {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f1f5f9;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .barrio:last-child {
+        border-bottom: none;
+    }
+
+    .info {
+        line-height: 1.6;
+        flex: 1;
+    }
+
+    .info strong {
+        font-size: 16px;
+        color: #14532d;
+    }
+
+    .info small {
+        font-size: 12px;
+    }
+
+    .info p {
+        font-size: 13px;
+        margin: 5px 0;
+        color: #555;
+    }
+
+    /* BOTONES */
+    .botones {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 8px 14px;
+        background: #14532d;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 13px;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn:hover {
+        background: #166534;
+        transform: translateY(-1px);
+    }
+
+    .btn-danger {
+        background: #dc2626;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+    .btn-wsp {
+        background: #25D366;
+    }
+
+    .btn-wsp:hover {
+        background: #128C7E;
+    }
+
+    .btn-disabled {
+        background: #9ca3af !important;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        body {
+            padding-top: 100px;
+        }
+
+        .topbar {
+            flex-direction: column;
+            text-align: center;
+            padding: 10px 15px;
+        }
+
+        .logo {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .user-center {
+            width: 100%;
+            text-align: center;
+        }
+
+        .logout-container {
+            width: 100%;
+            text-align: center;
+            margin-left: 0;
+        }
+
+        .container {
+            padding: 15px;
+        }
+
+        .btn-crear {
+            width: 100%;
+            text-align: center;
+        }
+
+        .resumen {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .resumen-item {
+            min-width: auto;
+        }
+
+        .barrio {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .botones {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .btn {
+            flex: 1;
+            justify-content: center;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .btn {
+            font-size: 12px;
+            padding: 8px 10px;
+        }
+        
+        .info strong {
+            font-size: 15px;
+        }
+        
+        .card {
+            padding: 15px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR FIJA -->
+<div class="topbar">
+    <div class="logo">
+        <img src="{% static 'img/PD_LOGO01.png' %}" alt="Logo">
+        <span>Planta Digital</span>
+    </div>
+    <div class="user-center">
+        👤 {{ request.user.username }}
+    </div>
+    <div class="logout-container">
+        <a href="{% url 'logout' %}" class="logout">Cerrar sesión</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- BOTÓN CREAR BARRIO -->
+    <a href="{% url 'crear_barrio' %}" class="btn-crear">+ Crear Barrio</a>
+
+    <!-- RESUMEN -->
+    <div class="card">
+        <h2>📊 Resumen General</h2>
+        <div class="resumen">
+            <div class="resumen-item">
+                <div class="numero">{{ usuarios }}</div>
+                <div class="label">👥 Usuarios registrados</div>
+            </div>
+            <div class="resumen-item">
+                <div class="numero">{{ barrios|length }}</div>
+                <div class="label">🏘️ Barrios activos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LISTADO DE BARRIOS -->
+    <div class="card">
+        <h2>🏘️ Gestión de Barrios</h2>
+
+        {% for barrio in barrios %}
+        <div class="barrio">
+            <div class="info">
+                <strong>{{ barrio.nombre }}</strong><br>
+                <small>
+                {% if barrio.fecha_vencimiento %}
+                    {% if barrio.fecha_vencimiento < today %}
+                        <span style="color:#dc2626;">🔴 Vencido ({{ barrio.fecha_vencimiento|date:"d/m/Y" }})</span>
+                    {% elif barrio.dias_restantes <= 5 %}
+                        <span style="color:#f59e0b;">🟡 Vence en {{ barrio.dias_restantes }} días</span>
+                    {% else %}
+                        <span style="color:#16a34a;">🟢 Vence el {{ barrio.fecha_vencimiento|date:"d/m/Y" }}</span>
+                    {% endif %}
+                {% else %}
+                    <span style="color:#dc2626;">❌ Sin fecha de vencimiento</span>
+                {% endif %}
+                </small>
+                <p>👤 {{ barrio.responsable|default:"Sin responsable" }}</p>
+                <p>📞 {{ barrio.telefono|default:"Sin teléfono" }}</p>
+            </div>
+
+            <div class="botones">
+                <!-- BOTÓN PAGADO -->
+                {% if barrio.fecha_vencimiento and barrio.fecha_vencimiento >= today %}
+                    <a class="btn btn-disabled">✔ Pagado</a>
+                {% else %}
+                    <a href="{% url 'marcar_pagado' barrio.id %}" 
+                       class="btn"
+                       onclick="return confirm('¿Marcar como pagado? Se reiniciará por 30 días.')">
+                        ✔ Pagado
+                    </a>
+                {% endif %}
+
+                <!-- EDITAR -->
+                <a href="{% url 'editar_barrio' barrio.id %}" class="btn">
+                    ✏️ Editar
+                </a>
+
+                <!-- WHATSAPP -->
+                {% if barrio.telefono %}
+                <a href="https://wa.me/{{ barrio.telefono }}" target="_blank" class="btn btn-wsp">
+                    💬 WhatsApp
+                </a>
+                {% endif %}
+
+                <!-- ELIMINAR -->
+                <a href="{% url 'eliminar_barrio' barrio.id %}" 
+                   class="btn btn-danger"
+                   onclick="return confirm('⚠️ ¿Eliminar este barrio? Esta acción no se puede deshacer.')">
+                    🗑️ Eliminar
+                </a>
+            </div>
+        </div>
+        {% empty %}
+            <p style="text-align:center; padding:30px; color:#94a3b8;">No hay barrios cargados.</p>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planta Digital — Barrios</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="/static/img/PD_LOGO.png">
+    <link rel="shortcut icon" href="/static/img/PD_LOGO.png">
+    <link rel="apple-touch-icon" href="/static/img/PD_LOGO.png">
+
+    <!-- SEO -->
+    <meta name="description" content="Planta Digital — Sistema de gestión para barrios privados. Expensas, pagos y comunicados online.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Planta Digital — Barrios">
+    <meta property="og:description" content="Administración digital de barrios privados.">
+    <meta property="og:url" content="https://barrios.plantadigital.com.ar">
+    <meta property="og:image" content="https://barrios.plantadigital.com.ar/static/img/PD_LOGO.png">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            /* Fondo */
+            background-image: url('/static/img/fondo_login.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            /* Ajustes para evitar que el teclado tape los campos */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-sizing: border-box;
+            padding: 20px 0; /* Espacio de seguridad para el scroll móvil */
+        }
+
+        /* Capa oscura */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(30,58,138,0.65);
+            z-index: 1;
+        }
+
+        /* Caja login */
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            width: 350px;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            margin: auto; /* Permite centrado dinámico */
+        }
+
+        /* Logo */
+        .logo {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+
+        /* Título */
+        h1 {
+            margin-bottom: 20px;
+            color: #14532d;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Botón */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #14532d;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #166534;
+        }
+
+        /* Error */
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        /* Link */
+        .link {
+            margin-top: 15px;
+            display: block;
+            font-size: 13px;
+            color: #14532d;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive y Teclado Móvil */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 25px 20px;
+            }
+        }
+
+        /* Si el teclado reduce mucho la pantalla, alineamos arriba para que se pueda ver todo */
+        @media (max-height: 500px) {
+            body {
+                justify-content: flex-start;
+                padding-top: 20px;
+            }
+        }
+
+        .seguridad-link {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .seguridad-link a {
+            color: #1e3a8a;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .seguridad-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <img src="/static/img/PD_LOGO.png" class="logo">
+    <h1>Planta Digital</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Usuario" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <button type="submit">Ingresar</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <a href="{% url 'password_reset' %}" class="link">
+        ¿Olvidó su contraseña?
+    </a>
+
+    <p class="seguridad-link">
+        ¿Sos personal de seguridad?
+        <a href="{% url 'login_seguridad' %}">Ingresá aquí</a>
+    </p>
+</div>
+
+
+<script>
+// Registrar Service Worker - OFFLINE
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/service-worker.js')
+            .then(registration => {
+                console.log('✅ Service Worker registrado en:', registration.scope);
+            })
+            .catch(error => {
+                console.log('❌ Error:', error);
+            });
+    });
+}
+</script>
+</body>
+
+</body>
+</html>
