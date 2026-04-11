@@ -153,7 +153,7 @@ else:
             # 🔥 USAR HOST DIRECTO DE SUPABASE (NO pooler)
             'HOST': os.environ.get('DB_HOST'),
 
-            'PORT': os.environ.get('DB_PORT', '5432'),
+            'PORT': os.environ.get('DB_PORT', '6543'),
 
             'OPTIONS': {
                 'sslmode': 'require',
