@@ -1292,8 +1292,12 @@ def login_seguridad(request):
         password = request.POST.get('password')
         user = authenticate(request, username=dni, password=password)
         if user is not None:
-            login(request, user)
-            return redirect('panel_guardia')
+            # Verificar que existe como guardia
+            if Seguridad.objects.filter(usuario=user).exists():
+                login(request, user)
+                return redirect('panel_guardia')
+            else:
+                error = "Usuario no registrado como guardia"
         else:
             error = "DNI o contraseña incorrectos"
     return render(request, 'login_seguridad.html', {'error': error})
@@ -1301,14 +1305,19 @@ def login_seguridad(request):
 
 @login_required
 def panel_guardia(request):
-    seguridad = Seguridad.objects.get(usuario=request.user)
-    movimientos = Movimiento.objects.filter(
-        barrio=seguridad.barrio
-    ).order_by('-fecha_hora')[:20]
-    return render(request, 'panel_guardia.html', {
-        'seguridad': seguridad,
-        'movimientos': movimientos
-    })
+    try:
+        seguridad = Seguridad.objects.get(usuario=request.user)
+        movimientos = Movimiento.objects.filter(
+            barrio=seguridad.barrio
+        ).order_by('-fecha_hora')[:20]
+        return render(request, 'panel_guardia.html', {
+            'seguridad': seguridad,
+            'movimientos': movimientos
+        })
+    except Seguridad.DoesNotExist:
+        from django.contrib import messages
+        messages.error(request, '❌ No tenés permisos de guardia. Contactá al administrador.')
+        return redirect('login_seguridad')
 
 
 @login_required
@@ -1329,6 +1338,8 @@ def registrar_movimiento(request, tipo):
         return redirect('panel_guardia')  # ← vuelve al panel con la lista actualizada
 
     return redirect('panel_guardia')
+
+
 @admin_barrio_required
 def eliminar_seguridad(request, seguridad_id):
     seguridad = get_object_or_404(Seguridad, id=seguridad_id)
