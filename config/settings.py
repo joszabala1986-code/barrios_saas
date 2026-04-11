@@ -261,7 +261,7 @@ SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 # =========================
 # INTENTOS DE ACCESOS
 # =========================
-AXES_ENABLED = True
+AXES_ENABLED = False
 AXES_FAILURE_LIMIT = 10
 AXES_COOLOFF_TIME = 1  # horas
 AXES_RESET_ON_SUCCESS = True
