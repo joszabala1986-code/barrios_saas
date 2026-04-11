@@ -1305,8 +1305,16 @@ def login_seguridad(request):
 
 @login_required
 def panel_guardia(request):
+    from django.contrib import messages
+    from django.shortcuts import redirect
+    
+    # Verificar que el usuario es guardia
+    if not hasattr(request.user, 'seguridad'):
+        messages.error(request, 'No tenés acceso al panel de guardia')
+        return redirect('mis_deudas')  # Redirige a la página de propietarios
+    
     try:
-        seguridad = Seguridad.objects.get(usuario=request.user)
+        seguridad = request.user.seguridad  # Esto funciona si la relación está bien
         movimientos = Movimiento.objects.filter(
             barrio=seguridad.barrio
         ).order_by('-fecha_hora')[:20]
@@ -1314,10 +1322,9 @@ def panel_guardia(request):
             'seguridad': seguridad,
             'movimientos': movimientos
         })
-    except Seguridad.DoesNotExist:
-        from django.contrib import messages
-        messages.error(request, '❌ No tenés permisos de guardia. Contactá al administrador.')
-        return redirect('login_seguridad')
+    except Exception as e:
+        messages.error(request, f'Error al cargar el panel')
+        return redirect('mis_deudas')
 
 
 @login_required
