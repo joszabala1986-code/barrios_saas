@@ -7,408 +7,403 @@
 <title>Panel Superadmin - Planta Digital</title>
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
         font-family: 'Segoe UI', Arial, sans-serif;
         background: #f4f6f9;
-        margin: 0;
-        padding-top: 70px;
+        padding-top: 65px;
     }
 
-    /* TOPBAR FIJA */
+    /* --- TOPBAR --- */
     .topbar {
         position: fixed;
-        top: 0;
-        left: 0;
+        top: 0; left: 0;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
         background: #14532d;
         color: white;
-        padding: 12px 20px;
-        box-sizing: border-box;
+        padding: 12px 24px;
         z-index: 1000;
-        flex-wrap: wrap;
-        gap: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
 
-    /* LOGO */
     .logo {
         display: flex;
         align-items: center;
         gap: 10px;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 15px;
     }
 
-    .logo img {
-        height: 35px;
-    }
+    .logo img { height: 32px; }
 
-    /* CENTRO - USUARIO */
     .user-center {
-        font-weight: 500;
-        font-size: 14px;
-    }
-
-    /* LOGOUT */
-    .logout-container {
-        margin-left: auto;
+        font-size: 13px;
+        color: rgba(255,255,255,0.85);
     }
 
     .logout {
         color: white;
         text-decoration: none;
-        font-weight: bold;
-        padding: 5px 10px;
-        border-radius: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.15);
         transition: background 0.3s;
     }
 
-    .logout:hover {
-        text-decoration: underline;
-        background: rgba(255,255,255,0.1);
-    }
+    .logout:hover { background: rgba(255,255,255,0.25); }
 
-    /* CONTENEDOR PRINCIPAL */
+    /* --- CONTENEDOR --- */
     .container {
-        padding: 20px;
-        max-width: 1200px;
+        padding: 24px 20px;
+        max-width: 1100px;
         margin: 0 auto;
     }
 
-    /* BOTÓN CREAR */
+    /* --- BOTÓN CREAR --- */
     .btn-crear {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         background: #14532d;
         color: white;
-        padding: 12px 24px;
-        border-radius: 8px;
+        padding: 12px 22px;
+        border-radius: 10px;
         text-decoration: none;
-        font-weight: bold;
-        margin-bottom: 20px;
-        transition: background 0.3s;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 22px;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(20,83,45,0.25);
     }
 
     .btn-crear:hover {
         background: #166534;
+        transform: translateY(-1px);
     }
 
-    /* TARJETAS */
+    /* --- CARDS RESUMEN --- */
+    .resumen-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .resumen-card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border-top: 3px solid #14532d;
+    }
+
+    .resumen-card .numero {
+        font-size: 32px;
+        font-weight: 800;
+        color: #14532d;
+    }
+
+    .resumen-card .label {
+        font-size: 13px;
+        color: #666;
+        margin-top: 4px;
+    }
+
+    /* --- CARD BARRIOS --- */
     .card {
         background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        overflow: hidden;
         margin-bottom: 20px;
     }
 
-    .card h2 {
+    .card-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .card-header h2 {
         color: #14532d;
-        font-size: 20px;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #e2e8f0;
+        font-size: 18px;
     }
 
-    .card h3 {
-        color: #14532d;
-        font-size: 16px;
-        margin: 10px 0;
-    }
-
-    /* RESÚMENES */
-    .resumen {
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .resumen-item {
-        flex: 1;
-        min-width: 150px;
-        background: #f8fafc;
-        padding: 15px;
-        border-radius: 10px;
-        text-align: center;
-        border-left: 4px solid #14532d;
-    }
-
-    .resumen-item .numero {
-        font-size: 28px;
-        font-weight: bold;
-        color: #14532d;
-    }
-
-    .resumen-item .label {
-        font-size: 13px;
-        color: #666;
-        margin-top: 5px;
-    }
-
-    /* LISTA DE BARRIOS */
-    .barrio {
+    /* --- FILA BARRIO --- */
+    .barrio-row {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f8fafc;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px 0;
-        border-bottom: 1px solid #f1f5f9;
-        flex-wrap: wrap;
-        gap: 15px;
+        gap: 16px;
+        transition: background 0.2s;
     }
 
-    .barrio:last-child {
-        border-bottom: none;
-    }
+    .barrio-row:last-child { border-bottom: none; }
+    .barrio-row:hover { background: #fafffe; }
 
-    .info {
-        line-height: 1.6;
-        flex: 1;
-    }
+    /* --- INFO BARRIO --- */
+    .barrio-info { flex: 1; min-width: 0; }
 
-    .info strong {
+    .barrio-nombre {
         font-size: 16px;
+        font-weight: 700;
         color: #14532d;
+        margin-bottom: 6px;
     }
 
-    .info small {
+    .barrio-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .badge-socios {
+        background: #dcfce7;
+        color: #166534;
+        padding: 3px 10px;
+        border-radius: 20px;
         font-size: 12px;
+        font-weight: 700;
     }
 
-    .info p {
-        font-size: 13px;
-        margin: 5px 0;
-        color: #555;
+    .badge-estado {
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
     }
 
-    /* BOTONES */
+    .badge-vencido { background: #fee2e2; color: #dc2626; }
+    .badge-pronto  { background: #fef9c3; color: #b45309; }
+    .badge-activo  { background: #dcfce7; color: #166534; }
+    .badge-sin     { background: #f1f5f9; color: #64748b; }
+
+    .barrio-detalle {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 5px;
+    }
+
+    /* --- BOTONES FILA --- */
     .botones {
         display: flex;
-        gap: 8px;
+        gap: 6px;
+        flex-shrink: 0;
         flex-wrap: wrap;
     }
 
     .btn {
-        padding: 8px 14px;
-        background: #14532d;
-        color: white;
+        padding: 7px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
         text-decoration: none;
-        border-radius: 6px;
-        font-size: 13px;
-        transition: all 0.2s;
         display: inline-flex;
         align-items: center;
-        gap: 5px;
+        gap: 4px;
+        transition: all 0.2s;
+        white-space: nowrap;
+        cursor: pointer;
+        border: none;
     }
 
-    .btn:hover {
-        background: #166534;
-        transform: translateY(-1px);
-    }
+    .btn-verde  { background: #14532d; color: white; }
+    .btn-verde:hover { background: #166534; transform: translateY(-1px); }
 
-    .btn-danger {
-        background: #dc2626;
-    }
+    .btn-gris   { background: #e2e8f0; color: #374151; }
+    .btn-gris:hover { background: #cbd5e1; }
 
-    .btn-danger:hover {
-        background: #b91c1c;
-    }
+    .btn-wsp    { background: #25D366; color: white; }
+    .btn-wsp:hover { background: #128C7E; }
 
-    .btn-wsp {
-        background: #25D366;
-    }
-
-    .btn-wsp:hover {
-        background: #128C7E;
-    }
+    .btn-rojo   { background: #dc2626; color: white; }
+    .btn-rojo:hover { background: #b91c1c; }
 
     .btn-disabled {
-        background: #9ca3af !important;
+        background: #e2e8f0 !important;
+        color: #9ca3af !important;
         cursor: not-allowed;
         pointer-events: none;
-        opacity: 0.7;
     }
 
-    /* RESPONSIVE */
+    /* --- EMPTY --- */
+    .empty {
+        text-align: center;
+        padding: 40px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    /* --- RESPONSIVE --- */
     @media (max-width: 768px) {
-        body {
-            padding-top: 100px;
-        }
+        body { padding-top: 60px; }
 
         .topbar {
-            flex-direction: column;
-            text-align: center;
-            padding: 10px 15px;
+            padding: 10px 14px;
+            gap: 8px;
         }
 
-        .logo {
-            width: 100%;
-            justify-content: center;
-        }
+        .user-center { display: none; }
 
-        .user-center {
-            width: 100%;
-            text-align: center;
-        }
+        .logo span { display: none; }
 
-        .logout-container {
-            width: 100%;
-            text-align: center;
-            margin-left: 0;
-        }
+        .container { padding: 14px; }
 
-        .container {
-            padding: 15px;
-        }
-
-        .btn-crear {
-            width: 100%;
-            text-align: center;
-        }
-
-        .resumen {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .resumen-item {
-            min-width: auto;
-        }
-
-        .barrio {
+        .barrio-row {
             flex-direction: column;
             align-items: flex-start;
+            padding: 16px;
         }
 
         .botones {
             width: 100%;
-            justify-content: flex-start;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
         .btn {
-            flex: 1;
             justify-content: center;
-            text-align: center;
+            padding: 9px 10px;
+            font-size: 12px;
+        }
+
+        .resumen-grid {
+            grid-template-columns: 1fr 1fr;
         }
     }
 
-    @media (max-width: 480px) {
-        .btn {
-            font-size: 12px;
-            padding: 8px 10px;
+    @media (max-width: 400px) {
+        .botones {
+            grid-template-columns: 1fr 1fr;
         }
-        
-        .info strong {
-            font-size: 15px;
-        }
-        
-        .card {
-            padding: 15px;
+        .resumen-grid {
+            grid-template-columns: 1fr 1fr;
         }
     }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR FIJA -->
+<!-- TOPBAR -->
 <div class="topbar">
     <div class="logo">
         <img src="{% static 'img/PD_LOGO01.png' %}" alt="Logo">
         <span>Planta Digital</span>
     </div>
-    <div class="user-center">
-        👤 {{ request.user.username }}
-    </div>
-    <div class="logout-container">
-        <a href="{% url 'logout' %}" class="logout">Cerrar sesión</a>
-    </div>
+    <div class="user-center">👤 {{ request.user.username }}</div>
+    <a href="{% url 'logout' %}" class="logout">Cerrar sesión</a>
 </div>
 
 <div class="container">
-    <!-- BOTÓN CREAR BARRIO -->
-    <a href="{% url 'crear_barrio' %}" class="btn-crear">+ Crear Barrio</a>
+
+    <!-- BOTÓN CREAR -->
+    <a href="{% url 'crear_barrio' %}" class="btn-crear">
+        ➕ Crear Barrio
+    </a>
 
     <!-- RESUMEN -->
-    <div class="card">
-        <h2>📊 Resumen General</h2>
-        <div class="resumen">
-            <div class="resumen-item">
-                <div class="numero">{{ usuarios }}</div>
-                <div class="label">👥 Usuarios registrados</div>
-            </div>
-            <div class="resumen-item">
-                <div class="numero">{{ barrios|length }}</div>
-                <div class="label">🏘️ Barrios activos</div>
-            </div>
+    <div class="resumen-grid">
+        <div class="resumen-card">
+            <div class="numero">{{ usuarios }}</div>
+            <div class="label">👥 Usuarios totales</div>
+        </div>
+        <div class="resumen-card">
+            <div class="numero">{{ barrios|length }}</div>
+            <div class="label">🏘️ Barrios activos</div>
         </div>
     </div>
 
     <!-- LISTADO DE BARRIOS -->
     <div class="card">
-        <h2>🏘️ Gestión de Barrios</h2>
+        <div class="card-header">
+            <h2>🏘️ Gestión de Barrios</h2>
+        </div>
 
         {% for barrio in barrios %}
-        <div class="barrio">
-            <div class="info">
-                <strong>{{ barrio.nombre }}</strong><br>
-                <small>
-                {% if barrio.fecha_vencimiento %}
-                    {% if barrio.fecha_vencimiento < today %}
-                        <span style="color:#dc2626;">🔴 Vencido ({{ barrio.fecha_vencimiento|date:"d/m/Y" }})</span>
-                    {% elif barrio.dias_restantes <= 5 %}
-                        <span style="color:#f59e0b;">🟡 Vence en {{ barrio.dias_restantes }} días</span>
+        <div class="barrio-row">
+
+            <!-- INFO -->
+            <div class="barrio-info">
+                <div class="barrio-nombre">{{ barrio.nombre }}</div>
+
+                <div class="barrio-meta">
+                    <!-- SOCIOS -->
+                    <span class="badge-socios">
+                        👤 {{ barrio.total_socios }} socio{{ barrio.total_socios|pluralize:"s" }}
+                    </span>
+
+                    <!-- ESTADO SUSCRIPCIÓN -->
+                    {% if barrio.fecha_vencimiento %}
+                        {% if barrio.fecha_vencimiento < today %}
+                            <span class="badge-estado badge-vencido">
+                                🔴 Vencido {{ barrio.fecha_vencimiento|date:"d/m/Y" }}
+                            </span>
+                        {% elif barrio.dias_restantes <= 5 %}
+                            <span class="badge-estado badge-pronto">
+                                🟡 Vence en {{ barrio.dias_restantes }} días
+                            </span>
+                        {% else %}
+                            <span class="badge-estado badge-activo">
+                                🟢 Activo hasta {{ barrio.fecha_vencimiento|date:"d/m/Y" }}
+                            </span>
+                        {% endif %}
                     {% else %}
-                        <span style="color:#16a34a;">🟢 Vence el {{ barrio.fecha_vencimiento|date:"d/m/Y" }}</span>
+                        <span class="badge-estado badge-sin">❌ Sin vencimiento</span>
                     {% endif %}
-                {% else %}
-                    <span style="color:#dc2626;">❌ Sin fecha de vencimiento</span>
-                {% endif %}
-                </small>
-                <p>👤 {{ barrio.responsable|default:"Sin responsable" }}</p>
-                <p>📞 {{ barrio.telefono|default:"Sin teléfono" }}</p>
+                </div>
+
+                <div class="barrio-detalle">
+                    📞 {{ barrio.telefono|default:"Sin teléfono" }}
+                </div>
             </div>
 
+            <!-- BOTONES -->
             <div class="botones">
-                <!-- BOTÓN PAGADO -->
+
                 {% if barrio.fecha_vencimiento and barrio.fecha_vencimiento >= today %}
-                    <a class="btn btn-disabled">✔ Pagado</a>
+                    <a class="btn btn-gris btn-disabled">✔ Pagado</a>
                 {% else %}
-                    <a href="{% url 'marcar_pagado' barrio.id %}" 
-                       class="btn"
+                    <a href="{% url 'marcar_pagado' barrio.id %}"
+                       class="btn btn-verde"
                        onclick="return confirm('¿Marcar como pagado? Se reiniciará por 30 días.')">
                         ✔ Pagado
                     </a>
                 {% endif %}
 
-                <!-- EDITAR -->
-                <a href="{% url 'editar_barrio' barrio.id %}" class="btn">
+                <a href="{% url 'editar_barrio' barrio.id %}" class="btn btn-gris">
                     ✏️ Editar
                 </a>
 
-                <!-- WHATSAPP -->
                 {% if barrio.telefono %}
                 <a href="https://wa.me/{{ barrio.telefono }}" target="_blank" class="btn btn-wsp">
                     💬 WhatsApp
                 </a>
                 {% endif %}
 
-                <!-- ELIMINAR -->
-                <a href="{% url 'eliminar_barrio' barrio.id %}" 
-                   class="btn btn-danger"
+                <a href="{% url 'eliminar_barrio' barrio.id %}"
+                   class="btn btn-rojo"
                    onclick="return confirm('⚠️ ¿Eliminar este barrio? Esta acción no se puede deshacer.')">
                     🗑️ Eliminar
                 </a>
+
             </div>
         </div>
         {% empty %}
-            <p style="text-align:center; padding:30px; color:#94a3b8;">No hay barrios cargados.</p>
+        <div class="empty">
+            🏘️ No hay barrios cargados aún.
+        </div>
         {% endfor %}
+
     </div>
 </div>
 

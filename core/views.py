@@ -1066,6 +1066,12 @@ def panel_superadmin(request):
             deuda__propiedad__barrio=b,
             estado='aprobado'
         ).aggregate(Sum('deuda__monto'))['deuda__monto__sum'] or 0
+        
+        # ✅ Contar socios activos (propietarios)
+        b.total_socios = Usuario.objects.filter(
+            barrio=b,
+            rol='propietario'
+        ).count()
 
     return render(request, 'panel_superadmin.html', {
         'barrios': barrios,
