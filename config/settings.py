@@ -12,8 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =========================
 # ENTORNO
 # =========================
-ENV = os.environ.get('ENV', 'dev')  # dev o prod
-DEBUG = ENV == 'dev'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
