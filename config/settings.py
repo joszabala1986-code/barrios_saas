@@ -60,11 +60,11 @@ if not DEBUG:
 
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
 
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-
     SECURE_REFERRER_POLICY = "same-origin"
 
     SECURE_CROSS_ORIGIN_OPENER_POLICY = None
@@ -240,10 +240,6 @@ LOGGING = {
     },
 }
 
-# =========================
-# AXES
-# =========================
-AXES_FAILURE_LIMIT = 5
 
 # =========================
 # SESIONES
@@ -261,3 +257,18 @@ AUTHENTICATION_BACKENDS = [
 # =========================
 SUPABASE_URL = os.environ.get('SUPABASE_URL')
 SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+
+# =========================
+# INTENTOS DE ACCESOS
+# =========================
+AXES_ENABLED = True
+AXES_FAILURE_LIMIT = 10
+AXES_COOLOFF_TIME = 1  # horas
+AXES_RESET_ON_SUCCESS = True
+
+# 🔥 CLAVE PARA RENDER (PROXY)
+AXES_BEHIND_REVERSE_PROXY = True
+AXES_PROXY_COUNT = 1
+
+# 🔥 IDENTIFICAR IP REAL
+AXES_CLIENT_IP_CALLABLE = 'axes.helpers.get_client_ip_address'
