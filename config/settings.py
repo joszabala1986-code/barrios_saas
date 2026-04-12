@@ -104,7 +104,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
    
-    'axes.middleware.AxesMiddleware',
+    #'axes.middleware.AxesMiddleware',
     'core.middleware.BarrioMiddleware',
 ]
 
@@ -248,7 +248,7 @@ SESSION_COOKIE_AGE = 3600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesStandaloneBackend',
+    #'axes.backends.AxesStandaloneBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
