@@ -144,10 +144,6 @@ def exportar_historial_lotes(request):
     return response
 
 
-# ─────────────────────────────────────────
-# LOGIN
-# ─────────────────────────────────────────
-
 @never_cache
 @csrf_protect
 def login_view(request):
@@ -163,8 +159,8 @@ def login_view(request):
         elif rol == 'propietario':
             return redirect('mis_deudas')
 
-        # 🔐 seguridad
-        elif Seguridad.objects.filter(usuario=request.user).exists():
+        # 🔐 seguridad (FIX)
+        elif hasattr(request.user, 'seguridad'):
             return redirect('panel_guardia')
 
         return redirect('mis_deudas')
@@ -181,7 +177,6 @@ def login_view(request):
 
             rol = getattr(user, 'rol', None)
 
-            # 🔐 USUARIO NORMAL
             if rol == 'superadmin':
                 return redirect('panel_superadmin')
             elif rol == 'admin':
@@ -189,11 +184,10 @@ def login_view(request):
             elif rol == 'propietario':
                 return redirect('mis_deudas')
 
-            # 🔐 SEGURIDAD
-            elif Seguridad.objects.filter(usuario=user).exists():
+            # 🔐 seguridad (FIX)
+            elif hasattr(user, 'seguridad'):
                 return redirect('panel_guardia')
 
-            # fallback
             return redirect('mis_deudas')
 
         else:
@@ -202,6 +196,9 @@ def login_view(request):
             })
 
     return render(request, 'login.html')
+
+
+
 
 # ─────────────────────────────────────────
 # MIS DEUDAS (PROPIETARIO)
