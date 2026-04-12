@@ -151,32 +151,57 @@ def exportar_historial_lotes(request):
 @never_cache
 @csrf_protect
 def login_view(request):
+
+    # 🔐 Usuario ya autenticado
     if request.user.is_authenticated:
-        if request.user.rol == 'superadmin':
+        rol = getattr(request.user, 'rol', None)
+
+        if rol == 'superadmin':
             return redirect('panel_superadmin')
-        elif request.user.rol == 'admin':
+        elif rol == 'admin':
             return redirect('dashboard')
-        else:
+        elif rol == 'propietario':
             return redirect('mis_deudas')
 
+        # 🔐 seguridad
+        elif Seguridad.objects.filter(usuario=request.user).exists():
+            return redirect('panel_guardia')
+
+        return redirect('mis_deudas')
+
+    # 🔐 POST login
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            if user.rol == 'superadmin':
+
+            rol = getattr(user, 'rol', None)
+
+            # 🔐 USUARIO NORMAL
+            if rol == 'superadmin':
                 return redirect('panel_superadmin')
-            elif user.rol == 'admin':
+            elif rol == 'admin':
                 return redirect('dashboard')
-            else:
+            elif rol == 'propietario':
                 return redirect('mis_deudas')
+
+            # 🔐 SEGURIDAD
+            elif Seguridad.objects.filter(usuario=user).exists():
+                return redirect('panel_guardia')
+
+            # fallback
+            return redirect('mis_deudas')
+
         else:
-            return render(request, 'login.html', {'error': 'Usuario o contraseña incorrectos'})
+            return render(request, 'login.html', {
+                'error': 'Usuario o contraseña incorrectos'
+            })
 
     return render(request, 'login.html')
-
 
 # ─────────────────────────────────────────
 # MIS DEUDAS (PROPIETARIO)
