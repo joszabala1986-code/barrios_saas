@@ -144,60 +144,38 @@ def exportar_historial_lotes(request):
     return response
 
 
+# ─────────────────────────────────────────
+# LOGIN
+# ─────────────────────────────────────────
+
 @never_cache
 @csrf_protect
 def login_view(request):
-
-    # 🔐 Usuario ya autenticado
     if request.user.is_authenticated:
-        rol = getattr(request.user, 'rol', None)
-
-        if rol == 'superadmin':
+        if request.user.rol == 'superadmin':
             return redirect('panel_superadmin')
-        elif rol == 'admin':
+        elif request.user.rol == 'admin':
             return redirect('dashboard')
-        elif rol == 'propietario':
+        else:
             return redirect('mis_deudas')
 
-        # 🔐 seguridad (FIX)
-        elif hasattr(request.user, 'seguridad'):
-            return redirect('panel_guardia')
-
-        return redirect('mis_deudas')
-
-    # 🔐 POST login
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-
-            rol = getattr(user, 'rol', None)
-
-            if rol == 'superadmin':
+            if user.rol == 'superadmin':
                 return redirect('panel_superadmin')
-            elif rol == 'admin':
+            elif user.rol == 'admin':
                 return redirect('dashboard')
-            elif rol == 'propietario':
+            else:
                 return redirect('mis_deudas')
-
-            # 🔐 seguridad (FIX)
-            elif hasattr(user, 'seguridad'):
-                return redirect('panel_guardia')
-
-            return redirect('mis_deudas')
-
         else:
-            return render(request, 'login.html', {
-                'error': 'Usuario o contraseña incorrectos'
-            })
+            return render(request, 'login.html', {'error': 'Usuario o contraseña incorrectos'})
 
     return render(request, 'login.html')
-
-
 
 
 # ─────────────────────────────────────────
@@ -1088,12 +1066,6 @@ def panel_superadmin(request):
             deuda__propiedad__barrio=b,
             estado='aprobado'
         ).aggregate(Sum('deuda__monto'))['deuda__monto__sum'] or 0
-        
-        # ✅ Contar socios activos (propietarios)
-        b.total_socios = Usuario.objects.filter(
-            barrio=b,
-            rol='propietario'
-        ).count()
 
     return render(request, 'panel_superadmin.html', {
         'barrios': barrios,
@@ -1314,12 +1286,8 @@ def login_seguridad(request):
         password = request.POST.get('password')
         user = authenticate(request, username=dni, password=password)
         if user is not None:
-            # Verificar que existe como guardia
-            if Seguridad.objects.filter(usuario=user).exists():
-                login(request, user)
-                return redirect('panel_guardia')
-            else:
-                error = "Usuario no registrado como guardia"
+            login(request, user)
+            return redirect('panel_guardia')
         else:
             error = "DNI o contraseña incorrectos"
     return render(request, 'login_seguridad.html', {'error': error})
@@ -1327,26 +1295,14 @@ def login_seguridad(request):
 
 @login_required
 def panel_guardia(request):
-    from django.contrib import messages
-    from django.shortcuts import redirect
-    
-    # Verificar que el usuario es guardia
-    if not hasattr(request.user, 'seguridad'):
-        messages.error(request, 'No tenés acceso al panel de guardia')
-        return redirect('mis_deudas')  # Redirige a la página de propietarios
-    
-    try:
-        seguridad = request.user.seguridad  # Esto funciona si la relación está bien
-        movimientos = Movimiento.objects.filter(
-            barrio=seguridad.barrio
-        ).order_by('-fecha_hora')[:20]
-        return render(request, 'panel_guardia.html', {
-            'seguridad': seguridad,
-            'movimientos': movimientos
-        })
-    except Exception as e:
-        messages.error(request, f'Error al cargar el panel')
-        return redirect('mis_deudas')
+    seguridad = Seguridad.objects.get(usuario=request.user)
+    movimientos = Movimiento.objects.filter(
+        barrio=seguridad.barrio
+    ).order_by('-fecha_hora')[:20]
+    return render(request, 'panel_guardia.html', {
+        'seguridad': seguridad,
+        'movimientos': movimientos
+    })
 
 
 @login_required
@@ -1367,8 +1323,6 @@ def registrar_movimiento(request, tipo):
         return redirect('panel_guardia')  # ← vuelve al panel con la lista actualizada
 
     return redirect('panel_guardia')
-
-
 @admin_barrio_required
 def eliminar_seguridad(request, seguridad_id):
     seguridad = get_object_or_404(Seguridad, id=seguridad_id)

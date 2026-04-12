@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,7 +11,7 @@
     <link rel="apple-touch-icon" href="/static/img/PD_LOGO.png">
 
     <!-- SEO -->
-    <meta name="description" content="Planta Digital — Sistema de gestión para barrios privados.">
+    <meta name="description" content="Planta Digital — Sistema de gestión para barrios privados. Expensas, pagos y comunicados online.">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Planta Digital — Barrios">
     <meta property="og:description" content="Administración digital de barrios privados.">
@@ -20,311 +19,185 @@
     <meta property="og:image" content="https://barrios.plantadigital.com.ar/static/img/PD_LOGO.png">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            /* Fondo */
+            background-image: url('/static/img/fondo_login.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            /* Ajustes para evitar que el teclado tape los campos */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(160deg, #1a2e1a 0%, #2d4a2d 35%, #3a6b4a 65%, #4a8060 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Círculos decorativos de fondo */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -120px;
-            right: -80px;
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: 200px;
-            left: -100px;
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        /* --- ZONA SUPERIOR CON LOGO --- */
-        .hero {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            padding: 60px 20px 40px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo-wrapper {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 14px;
-            animation: fadeDown 0.6s ease both;
-        }
-
-        .logo-img {
-            width: 90px;
-            height: 90px;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3));
-        }
-
-        .logo-text {
-            font-size: 26px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: 0.5px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        /* --- CAJA LOGIN --- */
-        .login-sheet {
-            background: white;
-            border-radius: 32px 32px 0 0;
-            padding: 40px 32px 48px;
             position: relative;
-            z-index: 2;
-            box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
-            animation: slideUp 0.5s ease both;
-            animation-delay: 0.15s;
+            box-sizing: border-box;
+            padding: 20px 0; /* Espacio de seguridad para el scroll móvil */
         }
 
-        .sheet-handle {
-            width: 40px;
-            height: 4px;
-            background: #e2e8f0;
-            border-radius: 2px;
-            margin: 0 auto 28px;
-        }
-
-        .sheet-title {
-            font-size: 26px;
-            font-weight: 800;
-            color: #1a2e1a;
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        /* --- INPUTS --- */
-        .campo {
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        .campo-icono {
+        /* Capa oscura */
+        body::before {
+            content: "";
             position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            color: #94a3b8;
-            pointer-events: none;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(30,58,138,0.65);
+            z-index: 1;
         }
 
-        .campo input {
-            width: 100%;
-            padding: 15px 16px 15px 44px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 14px;
-            font-size: 15px;
-            font-family: inherit;
-            color: #1e293b;
-            background: #f8fafc;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .campo input::placeholder { color: #94a3b8; }
-
-        .campo input:focus {
-            border-color: #14532d;
+        /* Caja login */
+        .login-box {
             background: white;
-            box-shadow: 0 0 0 4px rgba(20,83,45,0.08);
-        }
-
-        /* --- BOTÓN --- */
-        .btn-ingresar {
-            width: 100%;
-            padding: 16px;
-            background: #14532d;
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 16px rgba(20,83,45,0.35);
-            letter-spacing: 0.3px;
-        }
-
-        .btn-ingresar:hover {
-            background: #166534;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(20,83,45,0.4);
-        }
-
-        .btn-ingresar:active {
-            transform: translateY(0);
-        }
-
-        /* --- ERROR --- */
-        .error-msg {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 10px 14px;
+            padding: 40px;
             border-radius: 10px;
-            font-size: 13px;
-            margin-bottom: 14px;
+            width: 350px;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             text-align: center;
+            position: relative;
+            z-index: 2;
+            margin: auto; /* Permite centrado dinámico */
         }
 
-        /* --- LINKS --- */
-        .links {
-            margin-top: 22px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
+        /* Logo */
+        .logo {
+            width: 150px;
+            margin-bottom: 10px;
         }
 
+        /* Título */
+        h1 {
+            margin-bottom: 20px;
+            color: #14532d;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Botón */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #14532d;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #166534;
+        }
+
+        /* Error */
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        /* Link */
         .link {
+            margin-top: 15px;
+            display: block;
             font-size: 13px;
             color: #14532d;
             text-decoration: none;
-            font-weight: 600;
         }
 
-        .link:hover { text-decoration: underline; }
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive y Teclado Móvil */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 25px 20px;
+            }
+        }
+
+        /* Si el teclado reduce mucho la pantalla, alineamos arriba para que se pueda ver todo */
+        @media (max-height: 500px) {
+            body {
+                justify-content: flex-start;
+                padding-top: 20px;
+            }
+        }
 
         .seguridad-link {
-            font-size: 13px;
-            color: #64748b;
+            margin-top: 15px;
             text-align: center;
+            font-size: 13px;
+            color: #666;
         }
 
         .seguridad-link a {
             color: #1e3a8a;
-            font-weight: 700;
+            font-weight: bold;
             text-decoration: none;
         }
 
-        .seguridad-link a:hover { text-decoration: underline; }
-
-        /* --- ANIMACIONES --- */
-        @keyframes fadeDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- RESPONSIVE --- */
-        @media (min-width: 480px) {
-            body {
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-            }
-
-            .hero {
-                padding: 40px 20px 30px;
-                flex: none;
-            }
-
-            .login-sheet {
-                border-radius: 28px;
-                width: 100%;
-                max-width: 380px;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-            }
-        }
-
-        @media (max-height: 600px) {
-            .hero { padding: 30px 20px 20px; }
-            .logo-img { width: 65px; height: 65px; }
-            .logo-text { font-size: 20px; }
-            .login-sheet { padding: 28px 28px 36px; }
-            .sheet-title { font-size: 22px; margin-bottom: 20px; }
+        .seguridad-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
 
-<!-- ZONA SUPERIOR CON LOGO -->
-<div class="hero">
-    <div class="logo-wrapper">
-        <img src="/static/img/PD_LOGO.png" class="logo-img" alt="Planta Digital">
-        <div class="logo-text">Planta Digital</div>
-    </div>
-</div>
-
-<!-- CAJA LOGIN -->
-<div class="login-sheet">
-    <div class="sheet-handle"></div>
-    <h1 class="sheet-title">Bienvenido</h1>
-
-    {% if error %}
-    <div class="error-msg">⚠️ {{ error }}</div>
-    {% endif %}
+<div class="login-box">
+    <img src="/static/img/PD_LOGO.png" class="logo">
+    <h1>Planta Digital</h1>
 
     <form method="POST">
         {% csrf_token %}
-
-        <div class="campo">
-            <span class="campo-icono">👤</span>
-            <input type="text" name="username" placeholder="Usuario" required autocomplete="username">
-        </div>
-
-        <div class="campo">
-            <span class="campo-icono">🔒</span>
-            <input type="password" name="password" placeholder="Contraseña" required autocomplete="current-password">
-        </div>
-
-        <button type="submit" class="btn-ingresar">Ingresar</button>
+        <input type="text" name="username" placeholder="Usuario" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <button type="submit">Ingresar</button>
     </form>
 
-    <div class="links">
-        <a href="{% url 'password_reset' %}" class="link">
-            ¿Olvidaste tu contraseña?
-        </a>
-        <p class="seguridad-link">
-            ¿Sos personal de seguridad?
-            <a href="{% url 'login_seguridad' %}">Ingresá aquí</a>
-        </p>
-    </div>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <a href="{% url 'password_reset' %}" class="link">
+        ¿Olvidó su contraseña?
+    </a>
+
+    <p class="seguridad-link">
+        ¿Sos personal de seguridad?
+        <a href="{% url 'login_seguridad' %}">Ingresá aquí</a>
+    </p>
 </div>
 
+
 <script>
+// Registrar Service Worker - OFFLINE
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/static/service-worker.js')
-            .then(r => console.log('✅ SW:', r.scope))
-            .catch(e => console.log('❌ SW error:', e));
+            .then(registration => {
+                console.log('✅ Service Worker registrado en:', registration.scope);
+            })
+            .catch(error => {
+                console.log('❌ Error:', error);
+            });
     });
 }
 </script>
+</body>
 
 </body>
 </html>
