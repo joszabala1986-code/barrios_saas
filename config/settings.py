@@ -12,7 +12,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =========================
 # ENTORNO
 # =========================
-DEBUG = False
+ENV = os.environ.get('ENV', 'dev')
+DEBUG = ENV == 'dev'
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
@@ -264,10 +265,9 @@ SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 AXES_ENABLED = True
 AXES_FAILURE_LIMIT = 10
 AXES_COOLOFF_TIME = 1  # horas
-AXES_RESET_ON_SUCCESS = False
+AXES_RESET_ON_SUCCESS = True
 
 # 🔥 CLAVE PARA RENDER (PROXY)
-AXES_BEHIND_REVERSE_PROXY = True
+AXES_BEHIND_REVERSE_PROXY = False
 
 # 🔥 IDENTIFICAR IP REAL
-AXES_CLIENT_IP_CALLABLE = 'axes.helpers.get_client_ip_address'
