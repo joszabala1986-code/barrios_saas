@@ -103,8 +103,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'axes.middleware.AxesMiddleware',
-    'core.middleware.BarrioMiddleware',
+    # 🔥 DESACTIVAR TEMPORALMENTE
+    # 'axes.middleware.AxesMiddleware',
+    # 'core.middleware.BarrioMiddleware',
 ]
 
 # =========================
