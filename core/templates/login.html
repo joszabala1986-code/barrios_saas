@@ -267,10 +267,74 @@
             .login-sheet { padding: 28px 28px 36px; }
             .sheet-title { font-size: 22px; margin-bottom: 20px; }
         }
+
+/* ── LOADER ── */
+        #loader-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #14532d, #22c55e);
+            z-index: 10000;
+            transition: width 0.2s ease;
+            border-radius: 0 2px 2px 0;
+        }
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        #page-loader.visible { opacity: 1; pointer-events: all; }
+        .loader-logo-wrap {
+            width: 80px; height: 80px;
+            position: relative; overflow: hidden;
+            border-radius: 18px; background: #000;
+        }
+        .loader-logo-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .loader-shine {
+            position: absolute;
+            top: -40%; left: -70%;
+            width: 40%; height: 180%;
+            background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.55) 50%, transparent 80%);
+            transform: skewX(-15deg);
+            animation: shine-pass 2s ease-in-out infinite;
+        }
+        @keyframes shine-pass { 0%{left:-70%} 55%{left:140%} 100%{left:140%} }
+        .loader-label {
+            color: rgba(255,255,255,0.75);
+            font-size: 11px; letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+
+
+
     </style>
 </head>
 
 <body>
+
+    <div id="loader-bar"></div>
+<div id="page-loader">
+    <div class="loader-logo-wrap">
+        <img src="{% static 'img/PD_LOGO.png' %}" alt="Planta Digital">
+        <div class="loader-shine"></div>
+    </div>
+    <div class="loader-label">Cargando</div>
+</div>
+
 
 <!-- ZONA SUPERIOR CON LOGO -->
 <div class="hero">
@@ -317,6 +381,56 @@
 </div>
 
 <script>
+(function () {
+    const loader = document.getElementById("page-loader");
+    const bar    = document.getElementById("loader-bar");
+    let interval = null, barW = 0;
+
+    function showLoader() {
+        loader.classList.add("visible");
+        barW = 0; bar.style.width = "0%";
+        clearInterval(interval);
+        interval = setInterval(function () {
+            if (barW < 88) {
+                barW += Math.random() * 12 + 3;
+                bar.style.width = Math.min(barW, 88) + "%";
+            }
+        }, 220);
+    }
+
+    function hideLoader() {
+        clearInterval(interval);
+        bar.style.width = "100%";
+        setTimeout(function () {
+            loader.classList.remove("visible");
+            setTimeout(function () { bar.style.width = "0%"; }, 350);
+        }, 250);
+    }
+
+    // Al hacer submit del formulario de login
+    document.addEventListener("submit", function (e) {
+        showLoader();
+    });
+
+    // Si hay links internos (olvidaste contraseña, seguridad)
+    document.addEventListener("click", function (e) {
+        const link = e.target.closest("a[href]");
+        if (!link) return;
+        const href = link.getAttribute("href");
+        if (!href || href.startsWith("#") || href.startsWith("mailto:")
+            || link.target === "_blank") return;
+        try {
+            const url = new URL(href, location.href);
+            if (url.hostname !== location.hostname) return;
+        } catch (_) { return; }
+        showLoader();
+    });
+
+    window.addEventListener("load", hideLoader);
+    window.addEventListener("pageshow", function(e) { if (e.persisted) hideLoader(); });
+})();
+
+// Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/static/service-worker.js')

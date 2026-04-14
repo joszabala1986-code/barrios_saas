@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Planta Digital{% endblock %}</title>
+
+    <link rel="icon" type="image/png" href="{% static 'img/PD_LOGO.png' %}">
+    <link rel="shortcut icon" href="{% static 'img/PD_LOGO.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/PD_LOGO.png' %}">
+
+    {% block extra_head %}{% endblock %}
+
+    <style>
+        /* ── LOADER OVERLAY ── */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        #page-loader.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Barra superior verde */
+        #loader-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #14532d, #22c55e);
+            z-index: 10000;
+            transition: width 0.2s ease;
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* Logo con efecto shine */
+        .loader-logo-wrap {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            background: #000;
+        }
+        .loader-logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .loader-shine {
+            position: absolute;
+            top: -40%;
+            left: -70%;
+            width: 40%;
+            height: 180%;
+            background: linear-gradient(
+                105deg,
+                transparent 20%,
+                rgba(255, 255, 255, 0.55) 50%,
+                transparent 80%
+            );
+            transform: skewX(-15deg);
+            animation: shine-pass 2s ease-in-out infinite;
+        }
+        @keyframes shine-pass {
+            0%   { left: -70%; }
+            55%  { left: 140%; }
+            100% { left: 140%; }
+        }
+
+        .loader-label {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- BARRA SUPERIOR -->
+<div id="loader-bar"></div>
+
+<!-- LOADER OVERLAY -->
+<div id="page-loader">
+    <div class="loader-logo-wrap">
+        <img src="{% static 'img/PD_LOGO.png' %}" alt="Planta Digital">
+        <div class="loader-shine"></div>
+    </div>
+    <div class="loader-label">Cargando</div>
+</div>
+
+{% block content %}{% endblock %}
+
+<script>
+(function () {
+    const loader = document.getElementById("page-loader");
+    const bar    = document.getElementById("loader-bar");
+    let barInterval = null;
+    let barW = 0;
+
+    function showLoader() {
+        loader.classList.add("visible");
+        barW = 0;
+        bar.style.width = "0%";
+        clearInterval(barInterval);
+        barInterval = setInterval(function () {
+            if (barW < 88) {
+                barW += Math.random() * 12 + 3;
+                bar.style.width = Math.min(barW, 88) + "%";
+            }
+        }, 220);
+    }
+
+    function hideLoader() {
+        clearInterval(barInterval);
+        bar.style.width = "100%";
+        setTimeout(function () {
+            loader.classList.remove("visible");
+            setTimeout(function () { bar.style.width = "0%"; }, 350);
+        }, 250);
+    }
+
+    // Intercepta clicks en enlaces internos
+    document.addEventListener("click", function (e) {
+        const link = e.target.closest("a[href]");
+        if (!link) return;
+        const href = link.getAttribute("href");
+        if (!href || href.startsWith("#") || href.startsWith("mailto:")
+            || href.startsWith("tel:") || href.startsWith("javascript:")
+            || link.target === "_blank") return;
+        // Solo URLs relativas o del mismo dominio
+        try {
+            const url = new URL(href, location.href);
+            if (url.hostname !== location.hostname) return;
+        } catch (_) { return; }
+        showLoader();
+    });
+
+    // Intercepta envíos de formulario
+    document.addEventListener("submit", function (e) {
+        if (e.target.method && e.target.method.toLowerCase() === "get") return;
+        showLoader();
+    });
+
+    // Oculta cuando la página termina de cargar
+    window.addEventListener("load", hideLoader);
+
+    // Por si viene de cache (bfcache)
+    window.addEventListener("pageshow", function (e) {
+        if (e.persisted) hideLoader();
+    });
+})();
+</script>
+
+{% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

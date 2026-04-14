@@ -1,0 +1,9 @@
+{
+  "appId": "com.plantadigital.app",
+  "appName": "Planta Digital",
+  "webDir": "www",
+  "server": {
+    "url": "https://barrios.plantadigital.com.ar",
+    "cleartext": true
+  }
+}
