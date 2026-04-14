@@ -245,8 +245,8 @@ LOGGING = {
 # =========================
 # SESIONES
 # =========================
-SESSION_COOKIE_AGE = 3600
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 2592000
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 AUTHENTICATION_BACKENDS = [
     'axes.backends.AxesStandaloneBackend',
