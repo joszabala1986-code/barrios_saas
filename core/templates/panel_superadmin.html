@@ -175,6 +175,15 @@
         font-weight: 700;
     }
 
+    .badge-users {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
     .badge-estado {
         padding: 3px 10px;
         border-radius: 20px;
@@ -337,9 +346,13 @@
                 <div class="barrio-nombre">{{ barrio.nombre }}</div>
 
                 <div class="barrio-meta">
-                    <!-- SOCIOS -->
+
                     <span class="badge-socios">
                         👤 {{ barrio.total_socios }} socio{{ barrio.total_socios|pluralize:"s" }}
+                    </span>
+
+                    <span class="badge-users">
+                        👥 {{ barrio.total_usuarios }} usuarios
                     </span>
 
                     <!-- ESTADO SUSCRIPCIÓN -->

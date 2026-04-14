@@ -1057,15 +1057,20 @@ def panel_superadmin(request):
     today = date.today()
 
     for b in barrios:
-        if hasattr(b, 'suscripcionbarrio'):
-            b.dias_restantes = (b.suscripcionbarrio.fecha_vencimiento - today).days
-        else:
-            b.dias_restantes = None
 
-        b.total_recaudado = Pago.objects.filter(
-            deuda__propiedad__barrio=b,
-            estado='aprobado'
-        ).aggregate(Sum('deuda__monto'))['deuda__monto__sum'] or 0
+            b.total_usuarios = Propiedad.objects.filter(
+                barrio=b
+            ).count()
+
+            if hasattr(b, 'suscripcionbarrio'):
+                b.dias_restantes = (b.suscripcionbarrio.fecha_vencimiento - today).days
+            else:
+                b.dias_restantes = None
+
+            b.total_recaudado = Pago.objects.filter(
+                deuda__propiedad__barrio=b,
+                estado='aprobado'
+            ).aggregate(Sum('deuda__monto'))['deuda__monto__sum'] or 0
 
     return render(request, 'panel_superadmin.html', {
         'barrios': barrios,
