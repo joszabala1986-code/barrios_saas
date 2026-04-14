@@ -1,266 +1,156 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Morosos - Planta Digital</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 0;
-        }
+{% block title %}Morosos — Planta Digital{% endblock %}
 
-        /* HEADER RESPONSIVE */
-        .header {
-            background: white;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+{% block extra_head %}
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        background: #f4f6f9;
+        margin: 0;
+        padding: 0;
+    }
 
-        .logo-area img {
-            height: 32px;
-        }
+    .header {
+        background: white;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 
-        .header-barrio {
-            font-size: 14px;
-            font-weight: 600;
-            color: #14532d;
-            background: #ecfdf5;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
+    .logo-area { display: flex; align-items: center; gap: 8px; }
+    .logo-area img { height: 32px; }
 
-        /* BOTÓN VOLVER */
-        .btn-volver-delicado {
-            display: inline-flex;
-            align-items: center;
-            text-decoration: none;
-            color: #14532d;
-            font-weight: bold;
-            font-size: 13px;
-            padding: 6px 14px;
-            border-radius: 50px;
-            background: rgba(20, 83, 45, 0.08);
-            border: 1px solid rgba(20, 83, 45, 0.15);
-            transition: all 0.3s ease;
-        }
+    .header-barrio {
+        font-size: 14px;
+        font-weight: 600;
+        color: #14532d;
+        background: #ecfdf5;
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
 
-        .btn-volver-delicado:hover {
-            background: rgba(20, 83, 45, 0.15);
-            transform: translateX(-3px);
-        }
+    .btn-volver-delicado {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        color: #14532d;
+        font-weight: bold;
+        font-size: 13px;
+        padding: 6px 14px;
+        border-radius: 50px;
+        background: rgba(20, 83, 45, 0.08);
+        border: 1px solid rgba(20, 83, 45, 0.15);
+        transition: all 0.3s ease;
+    }
+    .btn-volver-delicado:hover {
+        background: rgba(20, 83, 45, 0.15);
+        transform: translateX(-3px);
+    }
 
-        /* CONTENEDOR RESPONSIVE */
-        .container {
-            padding: 16px;
-            max-width: 100%;
-            margin: auto;
-        }
+    .container { padding: 16px; max-width: 100%; margin: auto; }
 
-        /* TARJETAS */
-        .card {
-            background: white;
-            padding: 16px;
-            margin-bottom: 14px;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #edf2f7;
-            transition: all 0.2s ease;
-        }
+    .card {
+        background: white;
+        padding: 16px;
+        margin-bottom: 14px;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid #edf2f7;
+        transition: all 0.2s ease;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+    .acciones-morosos {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
 
-        /* ACCIONES BOTONES SUPERIORES */
-        .acciones-morosos {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+    .btn-excel, .btn-whatsapp-masivo {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 13px;
+        transition: all 0.3s ease;
+    }
+    .btn-excel { background: #14532d; color: white; }
+    .btn-excel:hover { background: #166534; transform: translateY(-2px); }
+    .btn-whatsapp-masivo { background: #dc2626; color: white; }
+    .btn-whatsapp-masivo:hover { background: #b91c1c; transform: translateY(-2px); }
 
-        .btn-excel, .btn-whatsapp-masivo {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
+    h2 {
+        font-size: 20px;
+        color: #14532d;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+    }
 
-        .btn-excel {
-            background: #14532d;
-            color: white;
-        }
+    .nombre { font-weight: 700; color: #14532d; font-size: 16px; margin-bottom: 6px; }
+    .lote-info { color: #64748b; font-size: 13px; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .concepto { background: #f1f5f9; padding: 6px 10px; border-radius: 8px; font-size: 13px; color: #334155; margin: 8px 0; display: inline-block; }
+    .vencimiento { font-size: 13px; color: #dc2626; margin: 8px 0; }
+    .monto { font-size: 20px; font-weight: 800; color: #dc2626; margin: 10px 0; }
 
-        .btn-excel:hover {
-            background: #166534;
-            transform: translateY(-2px);
-        }
+    .btn-avisar {
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        width: 100%;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .btn-avisar:hover { background: #b91c1c; transform: scale(1.02); }
 
-        .btn-whatsapp-masivo {
-            background: #dc2626;
-            color: white;
-        }
+    .empty-message {
+        text-align: center;
+        padding: 40px 20px;
+        background: white;
+        border-radius: 14px;
+        color: #64748b;
+        font-size: 14px;
+    }
 
-        .btn-whatsapp-masivo:hover {
-            background: #b91c1c;
-            transform: translateY(-2px);
-        }
+    .spacer { height: 20px; }
 
-        /* TÍTULO */
-        h2 {
-            font-size: 20px;
-            color: #14532d;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-        }
+    @media (min-width: 768px) {
+        .container { max-width: 800px; padding: 20px; }
+        .card { padding: 20px; }
+        .btn-avisar { width: auto; max-width: 200px; }
+        .header { padding: 12px 24px; }
+    }
+</style>
+{% endblock %}
 
-        h2:before {
-            content: "⚠️";
-            font-size: 22px;
-        }
-
-        /* INFO DEUDOR */
-        .nombre {
-            font-weight: 700;
-            color: #14532d;
-            font-size: 16px;
-            margin-bottom: 6px;
-        }
-
-        .lote-info {
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .concepto {
-            background: #f1f5f9;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #334155;
-            margin: 8px 0;
-            display: inline-block;
-        }
-
-        .vencimiento {
-            font-size: 13px;
-            color: #dc2626;
-            margin: 8px 0;
-        }
-
-        .monto {
-            font-size: 20px;
-            font-weight: 800;
-            color: #dc2626;
-            margin: 10px 0;
-        }
-
-        /* BOTÓN AVISAR MOROSO */
-        .btn-avisar {
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            width: 100%;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-avisar:hover {
-            background: #b91c1c;
-            transform: scale(1.02);
-        }
-
-        .btn-avisar:before {
-            content: "📱";
-            font-size: 14px;
-        }
-
-        /* MENSAJE VACÍO */
-        .empty-message {
-            text-align: center;
-            padding: 40px 20px;
-            background: white;
-            border-radius: 14px;
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        /* RESPONSIVE PARA TABLETS Y ESCRITORIO */
-        @media (min-width: 768px) {
-            .container {
-                max-width: 800px;
-                padding: 20px;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .btn-avisar {
-                width: auto;
-                max-width: 200px;
-            }
-            
-            .acciones-morosos {
-                justify-content: flex-end;
-            }
-            
-            .header {
-                padding: 12px 24px;
-            }
-        }
-
-        /* ESPACIO EXTRA AL FINAL */
-        .spacer {
-            height: 20px;
-        }
-    </style>
-</head>
-<body>
+{% block content %}
 
 <div class="header">
     <div class="logo-area">
@@ -270,23 +160,17 @@
         {{ barrio.nombre|default:"Mi Barrio" }}
     </div>
     <div>
-        <a class="btn-volver-delicado" href="/dashboard/">
-            ← Volver
-        </a>
+        <a class="btn-volver-delicado" href="/dashboard/">← Volver</a>
     </div>
 </div>
 
 <div class="container">
     <div class="acciones-morosos">
         <a href="/morosos/exportar/">
-            <button class="btn-excel">
-                📊 Exportar a Excel
-            </button>
+            <button class="btn-excel">📊 Exportar a Excel</button>
         </a>
         <a href="https://wa.me/?text=Aviso%20de%20morosidad%20del%20barrio" target="_blank">
-            <button class="btn-whatsapp-masivo">
-                📢 Avisar a todos
-            </button>
+            <button class="btn-whatsapp-masivo">📢 Avisar a todos</button>
         </a>
     </div>
 
@@ -302,32 +186,22 @@
                 <span>🏠 Lote {{ deuda.propiedad.numero_lote }}</span>
                 <span>📍 {{ deuda.propiedad.barrio.nombre }}</span>
             </div>
-            <div class="concepto">
-                📄 {{ deuda.concepto }}
-            </div>
-            <div class="vencimiento">
-                ⏰ Vence: {{ deuda.vencimiento|date:"d/m/Y" }}
-            </div>
-            <div class="monto">
-                ${{ deuda.monto }}
-            </div>
+            <div class="concepto">📄 {{ deuda.concepto }}</div>
+            <div class="vencimiento">⏰ Vence: {{ deuda.vencimiento|date:"d/m/Y" }}</div>
+            <div class="monto">${{ deuda.monto }}</div>
             <a href="https://wa.me/54{{ deuda.propiedad.propietario.celular }}?text=Hola%20{{ deuda.propiedad.propietario.first_name }}%2C%20te%20recordamos%20que%20tienes%20una%20expensa%20vencida%20del%20barrio%20{{ deuda.propiedad.barrio.nombre }}%20(lote%20{{ deuda.propiedad.numero_lote }})%20por%20%24{{ deuda.monto }}%20con%20vencimiento%20el%20{{ deuda.vencimiento|date:'d/m/Y' }}.%20Por%20favor%20regulariz%C3%A1%20el%20pago.%20Gracias." target="_blank">
-                <button class="btn-avisar">
-                    Avisar por WhatsApp
-                </button>
+                <button class="btn-avisar">Avisar por WhatsApp</button>
             </a>
         </div>
         {% endfor %}
     {% else %}
         <div class="empty-message">
-            ✅ No hay deudas vencidas.
-            <br>
-            <small style="color: #94a3b8;">Todos los vecinos están al día</small>
+            ✅ No hay deudas vencidas.<br>
+            <small style="color:#94a3b8;">Todos los vecinos están al día</small>
         </div>
     {% endif %}
 </div>
 
 <div class="spacer"></div>
 
-</body>
-</html>
+{% endblock %}
