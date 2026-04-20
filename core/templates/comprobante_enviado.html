@@ -1,103 +1,87 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
+{% block title %}Comprobante enviado — Planta Digital{% endblock %}
 
-<head>
-
-<title>Comprobante enviado</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+{% block extra_head %}
 <style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f4f6f9;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-body{
-font-family:Arial;
-background:#f4f6f9;
-margin:0;
-padding:30px;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
+    .card {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        margin: 20px auto;
+    }
 
-.card{
-background:white;
-padding:40px;
-border-radius:12px;
-box-shadow:0 4px 12px rgba(0,0,0,0.1);
-text-align:center;
-max-width:400px;
-}
+    .logo img {
+        height: 60px;
+        margin-bottom: 20px;
+    }
 
-.logo img{
-height:60px;
-margin-bottom:20px;
-}
+    .check {
+        font-size: 60px;
+        margin-bottom: 16px;
+        animation: popIn 0.5s ease both;
+    }
 
-.check{
-font-size:50px;
-color:#16a34a;
-margin-bottom:15px;
-}
+    @keyframes popIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to   { transform: scale(1);   opacity: 1; }
+    }
 
-h2{
-color:#14532d;
-margin-top:0;
-}
+    h2 {
+        color: #14532d;
+        margin-top: 0;
+        font-size: 22px;
+    }
 
-p{
-color:#555;
-}
+    p {
+        color: #555;
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 6px 0;
+    }
 
-.btn{
-display:inline-block;
-margin-top:20px;
-padding:12px 20px;
-background:#14532d;
-color:white;
-border-radius:8px;
-text-decoration:none;
-font-weight:bold;
-}
+    .btn {
+        display: inline-block;
+        margin-top: 24px;
+        padding: 13px 24px;
+        background: #14532d;
+        color: white;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: background 0.2s;
+    }
 
-.btn:hover{
-background:#166534;
-}
-
+    .btn:hover { background: #166534; }
 </style>
+{% endblock %}
 
-</head>
-
-<body>
-
+{% block content %}
 <div class="card">
-
-<div class="logo">
-<img src="{% static 'img/PD_LOGO.png' %}">
+    <div class="logo">
+        <img src="{% static 'img/PD_LOGO.png' %}" alt="Planta Digital">
+    </div>
+    <div class="check">✅</div>
+    <h2>Comprobante enviado</h2>
+    <p>Tu comprobante fue enviado correctamente.</p>
+    <p>El administrador validará el pago.</p>
+    <a class="btn" href="/mis-deudas/">Volver a mis deudas</a>
 </div>
-
-<div class="check">
-✅
-</div>
-
-<h2>Comprobante enviado</h2>
-
-<p>
-Tu comprobante fue enviado correctamente.
-</p>
-
-<p>
-El administrador validará el pago.
-</p>
-
-<a class="btn" href="/mis-deudas/">
-Volver a mis deudas
-</a>
-
-</div>
-
-</body>
-
-</html>
+{% endblock %}

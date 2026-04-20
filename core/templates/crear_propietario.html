@@ -1,160 +1,141 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
+{% block title %}Crear propietario — Planta Digital{% endblock %}
 
-<head>
-
-<title>Crear propietario</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+{% block extra_head %}
 <style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f4f6f9;
+        margin: 0;
+        padding: 30px 20px;
+        min-height: 100vh;
+    }
 
-body{
-font-family:Arial;
-background:#f4f6f9;
-margin:0;
-padding:30px;
-}
+    .container { max-width: 500px; margin: auto; }
 
-.container{
-max-width:500px;
-margin:auto;
-}
+    .card {
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #edf2f7;
+    }
 
-.card{
-background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 3px 8px rgba(0,0,0,0.1);
-}
+    .logo { text-align: center; margin-bottom: 20px; }
+    .logo img { height: 55px; }
 
-h2{
-margin-top:0;
-color:#14532d;
-text-align: center;
-}
+    h2 {
+        margin-top: 0;
+        color: #14532d;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 24px;
+    }
 
-label{
-font-weight:bold;
-color:#333;
-}
+    label {
+        display: block;
+        font-weight: 600;
+        color: #475569;
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
 
-input{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:15px;
-border:1px solid #ccc;
-border-radius:6px;
-}
+    input {
+        width: 100%;
+        padding: 11px 14px;
+        margin-bottom: 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.2s ease;
+        background: #f8fafc;
+    }
 
-.buttons{
-display:flex;
-gap:10px;
-margin-top:10px;
-}
+    input:focus {
+        border-color: #14532d;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(20,83,45,0.08);
+    }
 
-.btn{
-flex:1;
-padding:12px;
-border-radius:6px;
-text-align:center;
-text-decoration:none;
-font-weight:bold;
-border:none;
-cursor:pointer;
-}
+    input::placeholder { color: #94a3b8; }
 
-.btn-crear{
-background:#14532d;
-color:white;
-}
+    .buttons { display: flex; gap: 10px; margin-top: 6px; }
 
-.btn-crear:hover{
-background:#166534;
-}
+    .btn {
+        flex: 1;
+        padding: 13px;
+        border-radius: 10px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.btn-volver{
-background:#6b7280;
-color:white;
-}
+    .btn-crear { background: #14532d; color: white; box-shadow: 0 4px 12px rgba(20,83,45,0.2); }
+    .btn-crear:hover { background: #166534; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(20,83,45,0.25); }
 
-.btn-volver:hover{
-background:#4b5563;
-}
+    .btn-volver { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .btn-volver:hover { background: #e2e8f0; color: #1e293b; }
 
-.logo{
-text-align:center;
-margin-bottom:20px;
-}
-
-.logo img{
-height: 50px;
-}
-
+    @media (max-width: 480px) {
+        .card { padding: 24px; }
+        .buttons { flex-direction: column; }
+    }
 </style>
+{% endblock %}
 
-</head>
-
-<body>
-
+{% block content %}
 <div class="container">
+    <div class="card">
 
-<div class="card">
+        <div class="logo">
+            <img src="{% static 'img/PD_LOGO.png' %}" alt="Planta Digital">
+        </div>
 
-<div class="logo">
-<img src="{% static 'img/PD_LOGO.png' %}">
+        <h2>Nuevo propietario</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Usuario</label>
+            <input type="text" name="username" placeholder="Ej: juanperez" required>
+
+            <label>Nombre</label>
+            <input type="text" name="nombre" placeholder="Juan" required>
+
+            <label>Apellido</label>
+            <input type="text" name="apellido" placeholder="Perez" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="juan@email.com">
+
+            <label>Contraseña</label>
+            <input type="password" name="password" placeholder="********" required>
+
+            <label>Celular</label>
+            <input type="text" name="celular" placeholder="Ej: 2611234567">
+
+            <label>Número de lote</label>
+            <input type="text" name="lote" placeholder="Ej: 14" required>
+
+            <div class="buttons">
+                <button class="btn btn-crear" type="submit">✅ Crear propietario</button>
+                <a class="btn btn-volver" href="/dashboard/">← Volver</a>
+            </div>
+        </form>
+
+    </div>
 </div>
-
-<h2>Nuevo propietario</h2>
-
-<form method="post">
-
-{% csrf_token %}
-
-<label>Usuario</label>
-<input type="text" name="username" placeholder="Ej: juanperez" required>
-
-<label>Nombre</label>
-<input type="text" name="nombre" placeholder="Juan" required>
-
-<label>Apellido</label>
-<input type="text" name="apellido" placeholder="Perez" required>
-
-<label>Email</label>
-<input type="email" name="email" placeholder="juan@email.com">
-
-<label>Contraseña</label>
-<input type="password" name="password" placeholder="********" required>
-
-<p>
-Celular<br>
-<input type="text" name="celular" placeholder="Ej: 2611234567">
-</p>
-
-<label>Número de lote</label>
-<input type="text" name="lote" placeholder="Ej: 14" required>
-
-<div class="buttons">
-
-<button class="btn btn-crear" type="submit">
-Crear propietario
-</button>
-
-<a class="btn btn-volver" href="/dashboard/">
-Volver
-</a>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-</body>
-
-</html>
+{% endblock %}

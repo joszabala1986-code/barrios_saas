@@ -1,127 +1,131 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% load static %}
 
-<head>
-<title>Editar factura</title>
+{% block title %}Editar factura — Planta Digital{% endblock %}
 
+{% block extra_head %}
 <style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f4f6f9;
+        padding: 30px 20px;
+        min-height: 100vh;
+    }
 
-body{
-font-family:Arial;
-background:#f4f6f9;
-padding:30px;
-}
+    .card {
+        max-width: 500px;
+        margin: auto;
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #edf2f7;
+    }
 
-.card{
-max-width:500px;
-margin:auto;
-background:white;
-padding:30px;
-border-radius:10px;
-box-shadow:0 3px 8px rgba(0,0,0,0.1);
-}
+    h2 {
+        color: #14532d;
+        margin-top: 0;
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 24px;
+    }
 
-h2{
-color:#14532d;
-margin-top:0;
-}
+    label {
+        display: block;
+        font-weight: 600;
+        color: #475569;
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
 
-input{
-width:100%;
-padding:10px;
-margin-bottom:15px;
-border-radius:6px;
-border:1px solid #ddd;
-}
+    input {
+        width: 100%;
+        padding: 11px 14px;
+        margin-bottom: 18px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        background: #f8fafc;
+        outline: none;
+        transition: all 0.2s;
+    }
+    input:focus {
+        border-color: #14532d;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(20,83,45,0.08);
+    }
 
-button{
-background:#14532d;
-color:white;
-border:none;
-padding:12px;
-border-radius:8px;
-font-weight:bold;
-cursor:pointer;
-width:100%;
-}
+    .botones { display: flex; gap: 10px; margin-top: 6px; }
 
-button:hover{
-background:#166534;
-}
+    button {
+        flex: 1;
+        background: #14532d;
+        color: white;
+        border: none;
+        padding: 13px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(20,83,45,0.2);
+    }
+    button:hover { background: #166534; transform: translateY(-1px); }
 
-.botones{
-display:flex;
-gap:10px;
-margin-top:10px;
-}
+    .volver {
+        flex: 1;
+        background: #f1f5f9;
+        color: #475569;
+        text-decoration: none;
+        padding: 13px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s;
+    }
+    .volver:hover { background: #e2e8f0; color: #1e293b; }
 
-.volver{
-flex:1;
-background:#6b7280;
-color:white;
-text-decoration:none;
-padding:12px;
-border-radius:8px;
-text-align:center;
-font-weight:bold;
-}
-
-.volver:hover{
-background:#4b5563;
-}
-
-button{
-flex:1;
-}
-
+    @media (max-width: 480px) {
+        .card { padding: 24px; }
+        .botones { flex-direction: column; }
+    }
 </style>
+{% endblock %}
 
-</head>
-
-<body>
-
+{% block content %}
 <div class="card">
+    <h2>✏️ Editar factura</h2>
 
-<h2>Editar factura</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-<form method="POST" enctype="multipart/form-data">
+        <label>Descripción</label>
+        <input type="text" name="descripcion" value="{{ factura.descripcion }}">
 
-{% csrf_token %}
+        <label>Monto</label>
+        <input type="text" name="monto" id="monto" value="{{ factura.monto }}">
 
-<label>Descripción</label>
-<input type="text" name="descripcion" value="{{ factura.descripcion }}">
+        <label>Reemplazar comprobante</label>
+        <input type="file" name="archivo">
 
-<label>Monto</label>
-<input type="text" name="monto" id="monto" value="{{ factura.monto }}">
-
-<label>Reemplazar comprobante</label>
-<input type="file" name="archivo">
-
-<div class="botones">
-
-<button type="submit">Guardar cambios</button>
-
-<a href="/facturas/" class="volver">Volver</a>
-
+        <div class="botones">
+            <button type="submit">💾 Guardar cambios</button>
+            <a href="/facturas/" class="volver">← Volver</a>
+        </div>
+    </form>
 </div>
+{% endblock %}
 
-</form>
-
-</div>
-
+{% block extra_scripts %}
 <script>
-
-document.getElementById("monto").addEventListener("input", function(e){
-
-let valor = e.target.value.replace(/\./g,"");
-
-valor = Number(valor).toLocaleString("es-AR");
-
-e.target.value = valor;
-
+document.getElementById("monto").addEventListener("input", function(e) {
+    let valor = e.target.value.replace(/\./g, "");
+    valor = Number(valor).toLocaleString("es-AR");
+    e.target.value = valor;
 });
-
 </script>
-</body>
-
-</html>
+{% endblock %}

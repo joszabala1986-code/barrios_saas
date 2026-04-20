@@ -1,156 +1,131 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <title>Generar Deuda - {{ barrio.nombre }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 40px 20px;
-            color: #333;
-        }
 
-        .card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 450px;
-            margin: auto;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.07);
-            border: 1px solid #eef2f6;
-        }
+{% block title %}Generar Deuda — {{ barrio.nombre }}{% endblock %}
 
-        /* Identificador del Barrio Dinámico */
-        .header-barrio {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+{% block extra_head %}
+<style>
+    body {
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        background: #f4f6f9;
+        margin: 0;
+        padding: 40px 20px;
+        color: #333;
+        min-height: 100vh;
+    }
 
-        .label-admin {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #94a3b8;
-            font-weight: 700;
-            margin-bottom: 5px;
-            display: block;
-        }
+    .card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        margin: auto;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.07);
+        border: 1px solid #eef2f6;
+    }
 
-        .nombre-barrio-display {
-            font-size: 24px;
-            font-weight: 800;
-            color: #14532d;
-            margin: 0;
-        }
+    .header-barrio { text-align: center; margin-bottom: 30px; }
 
-        h2 {
-            color: #1e293b;
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 600;
-        }
+    .label-admin {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #94a3b8;
+        font-weight: 700;
+        margin-bottom: 5px;
+        display: block;
+    }
 
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: #475569;
-            margin-bottom: 8px;
-        }
+    .nombre-barrio-display {
+        font-size: 24px;
+        font-weight: 800;
+        color: #14532d;
+        margin: 0;
+    }
 
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            box-sizing: border-box;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.2s ease;
-        }
+    h2 {
+        color: #1e293b;
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
 
-        input:focus {
-            border-color: #14532d;
-            box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
-        }
+    label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: #475569;
+        margin-bottom: 8px;
+    }
 
-        /* Botón Principal */
-        button {
-            background: #14532d;
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(20, 83, 45, 0.2);
-            margin-top: 10px;
-        }
+    input {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        box-sizing: border-box;
+        font-size: 15px;
+        outline: none;
+        transition: all 0.2s ease;
+    }
 
-        button:hover {
-            background: #166534;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(20, 83, 45, 0.25);
-        }
+    input:focus {
+        border-color: #14532d;
+        box-shadow: 0 0 0 3px rgba(20,83,45,0.1);
+    }
 
-        /* Botón Volver Delicado */
-        .boton-volver {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 13px;
-            padding: 12px;
-            border-radius: 50px;
-            background: rgba(100, 116, 139, 0.08);
-            border: 1px solid rgba(100, 116, 139, 0.1);
-            margin-top: 30px;
-            transition: all 0.2s;
-        }
+    button {
+        background: #14532d;
+        color: white;
+        padding: 15px;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(20,83,45,0.2);
+        margin-top: 10px;
+    }
+    button:hover {
+        background: #166534;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(20,83,45,0.25);
+    }
 
-        .boton-volver:hover {
-            background: rgba(100, 116, 139, 0.15);
-            color: #1e293b;
-        }
+    .boton-volver {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 12px;
+        border-radius: 50px;
+        background: rgba(100,116,139,0.08);
+        border: 1px solid rgba(100,116,139,0.1);
+        margin-top: 30px;
+        transition: all 0.2s;
+    }
+    .boton-volver:hover { background: rgba(100,116,139,0.15); color: #1e293b; }
+</style>
+{% endblock %}
 
-        /* Alerta Informativa */
-        .alerta {
-            background: #f0fdf4;
-            border: 1px solid #dcfce7;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 13px;
-            color: #166534;
-            margin-top: 20px;
-            text-align: center;
-            line-height: 1.4;
-        }
-    </style>
-</head>
-
-<body>
-
+{% block content %}
 <div class="card">
     <div class="header-barrio">
         <span class="label-admin">Administrando Barrio</span>
         <h1 class="nombre-barrio-display">{{ barrio.nombre }}</h1>
     </div>
-    
+
     <h2>Generar Deudas Mensuales</h2>
 
     <form method="post">
         {% csrf_token %}
-
         <input type="hidden" name="barrio" value="{{ barrio.id }}">
 
         <label for="concepto">Concepto de la deuda</label>
@@ -163,14 +138,8 @@
         <input type="date" id="vencimiento" name="vencimiento" required>
 
         <button type="submit">Generar Deudas</button>
-
-        
     </form>
 
-    <a href="/lotes/" class="boton-volver">
-        ← Volver al panel de lotes
-    </a>
+    <a href="/lotes/" class="boton-volver">← Volver al panel de lotes</a>
 </div>
-
-</body>
-</html>
+{% endblock %}
